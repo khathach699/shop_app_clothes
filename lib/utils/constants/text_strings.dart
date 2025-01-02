@@ -11,9 +11,6 @@ class TText {
   static const String loginSubtitle =
       "Your gateway to a seamless shopping experience.";
 
-  static const String homeAppbarTitle = "Skip";
-  static const String homeAppbarSubTitle = "Next";
-
   //authe form
   static const String email = "E-Mail";
   static const String password = "Password";
@@ -22,4 +19,9 @@ class TText {
   static const String signIn = "Sign In";
   static const String signUp = "Sign Up";
   static const String orSignInWith = "Or Sign In With";
+
+  // home
+
+  static const String homeAppbarTitle = "Good day for shopping";
+  static const String homeAppbarSubTitle = "Stone King";
 }
