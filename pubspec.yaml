@@ -21,6 +21,7 @@ dependencies:
   get: ^4.6.6
   flutter_native_splash: ^2.4.4
   iconsax: ^0.0.8
+  carousel_slider: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,9 @@ flutter:
     - assets/logos/2.jpg
     - assets/logos/google.jpg
     - assets/logos/fb.jpg
+    - assets/logos/image.png
+    - assets/logos/image1.png
+    - assets/logos/image3.png
 
   fonts:
     - family: Poppins

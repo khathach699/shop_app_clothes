@@ -9,4 +9,9 @@ class TImages {
   static const String google = 'assets/logos/google.jpg';
 
   static const String sportIcon = "assets/logos/1.jpg";
+  // home
+
+  static const String shoe1 = "assets/logos/image.png";
+  static const String shoe2 = "assets/logos/image1.png";
+  static const String shoe3 = "assets/logos/image3.png";
 }
