@@ -7,4 +7,6 @@ class TImages {
 
   static const String facebook = 'assets/logos/fb.jpg';
   static const String google = 'assets/logos/google.jpg';
+
+  static const String sportIcon = "assets/logos/1.jpg";
 }
