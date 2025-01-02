@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app_clothes/utils/theme/theme.dart';
+import 'package:shop_app_clothes/app.dart';
+import 'package:shop_app_clothes/utils/constants/colors.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      themeMode: ThemeMode.system,
-      theme: TApptheme.lightTheme,
-      darkTheme: TApptheme.darkTheme,
-    );
-  }
+  runApp(const App());
 }
