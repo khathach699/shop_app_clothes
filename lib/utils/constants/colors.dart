@@ -6,7 +6,7 @@ class TColors {
   TColors._();
 
   // add basic colors
-  static const Color primaryColor = Color(0xFF4b68ff);
+  static const Color primaryColor = Color.fromARGB(255, 49, 101, 241);
   static const Color secondary = Color(0xFFFFE24B);
   static const Color accent = Color(0xFFb0c7ff);
 
