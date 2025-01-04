@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/tabbar.dart';
-import 'package:shop_app_clothes/common/widgets/brands/brands_show_case.dart';
-import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
+import 'package:shop_app_clothes/common/widgets/brands/brand_card.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/search_container.dart';
-import 'package:shop_app_clothes/common/widgets/images/t_circular_Image.dart';
 import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
 import 'package:shop_app_clothes/common/widgets/products/cart/cart_menu_icon.dart';
-import 'package:shop_app_clothes/common/widgets/texts/branch_title_with_verified_icon.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
-import 'package:shop_app_clothes/common/widgets/brands/brand_card.dart';
 import 'package:shop_app_clothes/features/shop/screens/store/widgets/category_tab.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';

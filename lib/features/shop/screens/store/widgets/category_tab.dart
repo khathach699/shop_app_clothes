@@ -28,16 +28,13 @@ class CategoryTab extends StatelessWidget {
               // TBrandShowcase(
               //   images: [TImages.shoe1, TImages.shoe2, TImages.shoe3],
               // ),
-
               // product
               TSectionHeading(
                 title: "You might like",
                 showActionButton: true,
                 onPressed: () {},
               ),
-
               const SizedBox(height: TSize.spaceBtwItems),
-
               TGridLayout(
                 itemCount: 10,
                 itemBuilder: (_, index) => const TProductCardVertical(),
