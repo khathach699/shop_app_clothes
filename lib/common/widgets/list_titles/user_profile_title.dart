@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_circular_Image.dart';
+import 'package:shop_app_clothes/features/personalization/screens/profile/proflie.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 
@@ -31,7 +33,7 @@ class TUserProfileUser extends StatelessWidget {
       ),
 
       trailing: IconButton(
-        onPressed: () {},
+        onPressed: () => Get.to(() => const ProfileScreen()),
         icon: Icon(Iconsax.edit, color: TColors.white, size: 20),
       ),
     );

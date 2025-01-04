@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/primary_header_primary.dart';
-import 'package:shop_app_clothes/common/widgets/images/t_circular_Image.dart';
 import 'package:shop_app_clothes/common/widgets/list_titles/setting_menu_title.dart';
 import 'package:shop_app_clothes/common/widgets/list_titles/user_profile_title.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class SettingScreen extends StatelessWidget {
