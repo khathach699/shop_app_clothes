@@ -22,6 +22,7 @@ dependencies:
   flutter_native_splash: ^2.4.4
   iconsax: ^0.0.8
   carousel_slider: ^5.0.0
+  readmore: ^3.0.0
 
 dev_dependencies:
   flutter_test:

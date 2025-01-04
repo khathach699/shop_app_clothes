@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:readmore/readmore.dart';
+import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/bottom_add_to_cart_widget.dart';
+import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/product_atriibutes.dart';
+import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/product_detail_image_slider.dart';
+import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/product_meta_data.dart';
+import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/rating_share_widget.dart';
+import 'package:shop_app_clothes/utils/constants/size.dart';
+import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
+
+class ProductDetail extends StatelessWidget {
+  const ProductDetail({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final dark = THelperFunctions.isDarkMode(context);
+    return Scaffold(
+      bottomNavigationBar: TBottomAddToCartWidGet(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // product image
+            TProductImageSlider(dark: dark),
+            // product detail
+            Padding(
+              padding: const EdgeInsets.only(
+                right: TSize.defaultSpace,
+                left: TSize.defaultSpace,
+                bottom: TSize.defaultSpace,
+              ),
+              child: Column(
+                children: [
+                  // Rating and Share
+                  TRateAndShare(),
+
+                  // price / title
+                  TProductMetaDate(),
+                  SizedBox(height: TSize.spaceBtwSections),
+                  // attributes
+                  TProductAttributes(),
+                  SizedBox(height: TSize.spaceBtwSections),
+
+                  // checkout
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      child: Text("Add to Cart"),
+                      onPressed: () {},
+                    ),
+                  ),
+                  SizedBox(height: TSize.spaceBtwSections),
+                  // description
+                  const TSectionHeading(
+                    title: "Description",
+                    showActionButton: false,
+                  ),
+
+                  SizedBox(height: TSize.spaceBtwSections),
+
+                  const ReadMoreText(
+                    "Dược chế tác từ hợp kim cao cấp, không gỉ, chống oxy hóa, bền bỉ với thời gian, Phong cách tối giản: Mẫu dây chuyền thiết kế thanh mảnh, phù hợp với mọi trang phục hàng ngày hoặc sự kiện.",
+                    trimLines: 2,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: "Show more",
+                    trimExpandedText: "Show less",
+                    moreStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    lessStyle: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TSectionHeading(
+                        title: "Review",
+                        showActionButton: false,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Iconsax.arrow_right_3, size: 18),
+                      ),
+                    ],
+                  ),
+                  // Review
+                  SizedBox(height: TSize.spaceBtwSections),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

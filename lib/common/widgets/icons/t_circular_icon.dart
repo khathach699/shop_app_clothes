@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
@@ -34,7 +33,7 @@ class TCircularIcon extends StatelessWidget {
                 ? TColors.black.withOpacity(0.9)
                 : TColors.white.withOpacity(0.9),
       ),
-      child: IconButton(onPressed: () {}, icon: const Icon(Iconsax.heart5)),
+      child: IconButton(onPressed: () {}, icon: Icon(icon, size: size)),
     );
   }
 }
