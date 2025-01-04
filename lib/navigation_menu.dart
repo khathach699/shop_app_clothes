@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/home.dart';
+import 'package:shop_app_clothes/features/shop/screens/store/store.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 class NavigationMenu extends StatelessWidget {
@@ -43,7 +44,7 @@ class NavigationController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    Container(color: Colors.green),
+    const StoreScreen(),
     Container(color: Colors.blue),
     Container(color: Colors.yellow),
   ];

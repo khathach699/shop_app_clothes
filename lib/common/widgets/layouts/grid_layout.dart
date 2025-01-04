@@ -25,7 +25,7 @@ class TGridLayout extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: TSize.gridViewSpacing,
         crossAxisSpacing: TSize.gridViewSpacing,
-        mainAxisExtent: 288,
+        mainAxisExtent: mainAxisExtent!,
       ),
       itemBuilder: itemBuilder,
     );
