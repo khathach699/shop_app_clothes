@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/utils.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/primary_header_primary.dart';
 import 'package:shop_app_clothes/common/widgets/list_titles/setting_menu_title.dart';
 import 'package:shop_app_clothes/common/widgets/list_titles/user_profile_title.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/screens/order/order.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
@@ -57,7 +60,7 @@ class SettingScreen extends StatelessWidget {
                     icon: Iconsax.bag_tick,
                     title: "My Order",
                     subtitle: "Already have 12 orders",
-                    onTap: () {},
+                    onTap: () => Get.to(() => OrderScreen()),
                   ),
                   TSettingMenuTitle(
                     icon: Iconsax.bank,

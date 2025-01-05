@@ -24,4 +24,8 @@ class TText {
 
   static const String homeAppbarTitle = "Good day for shopping";
   static const String homeAppbarSubTitle = "Stone King";
+
+  // success oder
+
+  static const String tContinus = "Continue Order";
 }
