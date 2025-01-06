@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/tabbar.dart';
 import 'package:shop_app_clothes/common/widgets/brands/brand_card.dart';
@@ -6,6 +7,7 @@ import 'package:shop_app_clothes/common/widgets/custom_shapes/container/search_c
 import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
 import 'package:shop_app_clothes/common/widgets/products/cart/cart_menu_icon.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/screens/all_products/all_products.dart';
 import 'package:shop_app_clothes/features/shop/screens/store/widgets/category_tab.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
@@ -57,7 +59,7 @@ class StoreScreen extends StatelessWidget {
                       // feature brand
                       TSectionHeading(
                         title: "Feature Brands",
-                        onPressed: () {},
+                        onPressed: () => Get.to(() => AllProducts()),
                       ),
                       const SizedBox(height: TSize.spaceBtwItems / 1.5),
 

@@ -10,8 +10,11 @@ import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
+import '../../../models/Product.dart';
+
 class TProductMetaDate extends StatelessWidget {
-  const TProductMetaDate({super.key});
+  final Product product;
+  const TProductMetaDate({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -46,36 +49,43 @@ class TProductMetaDate extends StatelessWidget {
               ),
             ),
             SizedBox(width: TSize.spaceBtwItems),
-            TProductPriceText(price: "200", isLarge: true),
+            TProductPriceText(price: product.price.toString(), isLarge: true),
           ],
         ),
         SizedBox(height: TSize.spaceBtwItems / 1.5),
-        const TProductTitleText(title: "Green Dress"),
+        TProductTitleText(title: product.name),
         SizedBox(height: TSize.spaceBtwItems / 1.5),
 
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const TProductTitleText(title: "Status"),
-            SizedBox(width: TSize.spaceBtwItems),
-            Text("In Stock", style: Theme.of(context).textTheme.titleMedium),
-          ],
-        ),
-
-        const SizedBox(height: TSize.spaceBtwItems / 1.5),
-
-        // brand
-        Row(
-          children: [
-            TCircularImage(
-              image: TImages.lightAppLogo,
-              width: 32,
-              height: 32,
-
-              // overlayColor: dark ? TColors.white : TColors.black,
+            Row(
+              children: [
+                Text("Store: ", style: Theme.of(context).textTheme.titleMedium),
+                SizedBox(width: TSize.spaceBtwItems),
+                TProductTitleText(
+                  title: product.colorSizes.first.quantity.toString(),
+                ), // Dùng first hoặc một phương thức lấy chính xác phần tử
+              ],
             ),
-            const TBrandTitleWithVerifiedIcon(
-              title: "Nike",
-              brandTextSize: TextSize.medium,
+
+            const SizedBox(height: TSize.spaceBtwItems / 1.5),
+
+            // brand
+            Row(
+              children: [
+                TCircularImage(
+                  image: TImages.lightAppLogo,
+                  width: 32,
+                  height: 32,
+
+                  // overlayColor: dark ? TColors.white : TColors.black,
+                ),
+                TBrandTitleWithVerifiedIcon(
+                  title: product.categoryName,
+                  brandTextSize: TextSize.medium,
+                ),
+              ],
             ),
           ],
         ),

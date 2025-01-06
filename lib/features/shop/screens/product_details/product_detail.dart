@@ -3,6 +3,8 @@ import 'package:get/route_manager.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/models/Product.dart';
+
 import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/bottom_add_to_cart_widget.dart';
 import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/product_atriibutes.dart';
 import 'package:shop_app_clothes/features/shop/screens/product_details/widgets/product_detail_image_slider.dart';
@@ -13,7 +15,10 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 class ProductDetail extends StatelessWidget {
-  const ProductDetail({super.key});
+  // Thêm thông tin sản phẩm vào constructor
+  final Product product;
+
+  const ProductDetail({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +29,7 @@ class ProductDetail extends StatelessWidget {
         child: Column(
           children: [
             // product image
-            TProductImageSlider(dark: dark),
+            TProductImageSlider(dark: dark, product: product),
             // product detail
             Padding(
               padding: const EdgeInsets.only(
@@ -36,14 +41,13 @@ class ProductDetail extends StatelessWidget {
                 children: [
                   // Rating and Share
                   TRateAndShare(),
-
                   // price / title
-                  TProductMetaDate(),
-                  SizedBox(height: TSize.spaceBtwSections),
-                  // attributes
-                  TProductAttributes(),
-                  SizedBox(height: TSize.spaceBtwSections),
+                  TProductMetaDate(product: product),
+                  Divider(),
 
+                  // attributes
+                  TProductAttributes(product: product),
+                  SizedBox(height: TSize.spaceBtwSections),
                   // checkout
                   SizedBox(
                     width: double.infinity,
@@ -58,15 +62,13 @@ class ProductDetail extends StatelessWidget {
                     title: "Description",
                     showActionButton: false,
                   ),
-
-                  SizedBox(height: TSize.spaceBtwSections),
-
-                  const ReadMoreText(
-                    "Dược chế tác từ hợp kim cao cấp, không gỉ, chống oxy hóa, bền bỉ với thời gian, Phong cách tối giản: Mẫu dây chuyền thiết kế thanh mảnh, phù hợp với mọi trang phục hàng ngày hoặc sự kiện.",
+                  SizedBox(height: TSize.spaceBtwItems),
+                  ReadMoreText(
+                    product.description,
                     trimLines: 2,
                     trimMode: TrimMode.Line,
-                    trimCollapsedText: "Show more",
-                    trimExpandedText: "Show less",
+                    trimCollapsedText: " Show more",
+                    trimExpandedText: " Show less",
                     moreStyle: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,

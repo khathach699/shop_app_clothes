@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:shop_app_clothes/features/auth/screens/login/login.dart';
 import 'package:shop_app_clothes/utils/theme/theme.dart';
 
@@ -9,6 +10,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: TApptheme.lightTheme,
       darkTheme: TApptheme.darkTheme,

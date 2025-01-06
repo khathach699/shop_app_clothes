@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/products/ratings/rating_indicator.dart';
 import 'package:shop_app_clothes/features/shop/screens/product_reviews/widgets/rating_profress_indicator.dart';
 import 'package:shop_app_clothes/features/shop/screens/product_reviews/widgets/user_review_card.dart';
-import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TProductReview extends StatelessWidget {

@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shop_app_clothes/common/widgets/chips/choice_chip.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/controllers/ProductController.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
+import '../../../models/Product.dart';
+
 class TProductAttributes extends StatelessWidget {
-  const TProductAttributes({super.key});
+  final Product product;
+  const TProductAttributes({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
+    // Instantiate the controller using GetX
+    final ProductController productController = Get.put(ProductController());
+
     return Column(
       children: [
+        // Colors section
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -17,47 +26,31 @@ class TProductAttributes extends StatelessWidget {
             const SizedBox(height: TSize.spaceBtwItems / 2),
             Wrap(
               spacing: 8,
-              children: [
-                TChoiceChip(
-                  text: "Green",
-                  selected: true,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Blue",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Yellow",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Black",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Pink",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Purple",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-                TChoiceChip(
-                  text: "Red",
-                  selected: false,
-                  onSelected: (value) {},
-                ),
-              ],
+              children:
+                  product.colorSizes.map((colorSize) {
+                    return Obx(() {
+                      // Use Obx to observe changes
+                      return TChoiceChip(
+                        text: colorSize.colorName,
+                        selected:
+                            productController.selectedColor.value ==
+                            colorSize.colorName,
+                        onSelected: (value) {
+                          if (value) {
+                            productController.setSelectedColor(
+                              colorSize.colorName,
+                            );
+                          }
+                        },
+                      );
+                    });
+                  }).toList(),
             ),
           ],
         ),
         SizedBox(height: TSize.spaceBtwItems),
+
+        // Size section
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -65,17 +58,24 @@ class TProductAttributes extends StatelessWidget {
             SizedBox(height: TSize.spaceBtwItems / 2),
             Wrap(
               spacing: 12,
-              children: [
-                TChoiceChip(text: "S", selected: true, onSelected: (value) {}),
-                TChoiceChip(text: "M", selected: false, onSelected: (value) {}),
-                TChoiceChip(text: "L", selected: false, onSelected: (value) {}),
-                TChoiceChip(text: "XL", selected: true, onSelected: (value) {}),
-                TChoiceChip(
-                  text: "XXL",
-                  selected: true,
-                  onSelected: (value) {},
-                ),
-              ],
+              children:
+                  product.colorSizes.map((colorSize) {
+                    return Obx(() {
+                      return TChoiceChip(
+                        text: colorSize.sizeName,
+                        selected:
+                            productController.selectedSize.value ==
+                            colorSize.sizeName,
+                        onSelected: (value) {
+                          if (value) {
+                            productController.setSelectedSize(
+                              colorSize.sizeName,
+                            );
+                          }
+                        },
+                      );
+                    });
+                  }).toList(),
             ),
           ],
         ),

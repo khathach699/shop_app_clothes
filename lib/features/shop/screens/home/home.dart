@@ -2,19 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/primary_header_primary.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/search_container.dart';
-import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
 import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/models/Product.dart';
 import 'package:shop_app_clothes/features/shop/screens/all_products/all_products.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/home_categories.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/promo_slider.dart';
+import 'package:shop_app_clothes/features/shop/screens/service/ProductService.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Product>> products;
+
+  @override
+  void initState() {
+    super.initState();
+    products = ProductService.getAllProducts(); // Fetch products on init
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +51,13 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(left: TSize.defaultSpace),
                     child: Column(
                       children: [
-                        //heading
+                        // Heading
                         TSectionHeading(
                           title: "Popular Categories",
                           showActionButton: false,
                           textColor: TColors.white,
                           onPressed: () {},
                         ),
-
                         // Categories
                         THomeCategories(),
                       ],
@@ -60,21 +73,61 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.all(TSize.defaultSpace),
               child: Column(
                 children: [
-                  TPromoSlider(
-                    banner: [TImages.shoe1, TImages.shoe2, TImages.shoe3],
-                  ),
+                  FutureBuilder<List<Product>>(
+                    future: products,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No products found'));
+                      } else {
+                        final productList = snapshot.data!;
 
-                  const SizedBox(height: TSize.spaceBtwSections),
+                        // Lấy hình ảnh của sản phẩm để làm banner
+                        List<String> imageList =
+                            productList.isNotEmpty
+                                ? productList
+                                    .map((product) => product.image)
+                                    .toList()
+                                : [TImages.shoe1]; // fallback image
 
-                  TSectionHeading(
-                    title: "New Arrivals",
-                    buttonTitle: "View All",
-                    onPressed: () => Get.to(() => AllProducts()),
-                  ),
-                  const SizedBox(height: TSize.spaceBtwItems / 2),
-                  TGridLayout(
-                    itemCount: 10,
-                    itemBuilder: (_, index) => const TProductCardVertical(),
+                        return Column(
+                          children: [
+                            TPromoSlider(
+                              banner: imageList,
+                              products: productList, // Pass the product list
+                            ),
+                            const SizedBox(height: TSize.spaceBtwSections),
+                            TSectionHeading(
+                              title: "New Arrivals",
+                              buttonTitle: "View All",
+                              onPressed: () => Get.to(() => AllProducts()),
+                            ),
+                            const SizedBox(height: TSize.spaceBtwItems / 2),
+
+                            // Grid of products
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.7,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
+                              itemCount: productList.length,
+                              itemBuilder: (context, index) {
+                                final product = productList[index];
+                                return TProductCardVertical(product: product);
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

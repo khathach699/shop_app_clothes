@@ -5,11 +5,17 @@ import 'package:shop_app_clothes/common/widgets/custom_shapes/curved_edges/curve
 import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_roundted_image.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
+import '../../../models/Product.dart';
+
 class TProductImageSlider extends StatelessWidget {
-  const TProductImageSlider({super.key, required this.dark});
+  final Product product;
+  const TProductImageSlider({
+    super.key,
+    required this.dark,
+    required this.product,
+  });
 
   final bool dark;
 
@@ -24,7 +30,7 @@ class TProductImageSlider extends StatelessWidget {
               height: 400,
               child: Padding(
                 padding: const EdgeInsets.all(TSize.productImageRadius * 2),
-                child: Image(image: AssetImage(TImages.shoe2)),
+                child: Image(image: NetworkImage(product.image)),
               ),
             ),
 
@@ -41,7 +47,7 @@ class TProductImageSlider extends StatelessWidget {
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemBuilder:
                       (_, index) => TRoundedImage(
-                        imageUrl: TImages.shoe3,
+                        imageUrl: product.image,
                         width: 80,
                         backgroundColor: dark ? TColors.dart : TColors.light,
                         border: Border.all(color: TColors.primaryColor),

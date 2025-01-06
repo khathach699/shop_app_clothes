@@ -13,7 +13,7 @@ class TRoundedImage extends StatelessWidget {
     this.backgroundColor = TColors.light,
     this.fit = BoxFit.contain,
     this.padding,
-    this.isNetWordImage = false,
+    this.isNetWordImage = true,
     this.onPress,
     this.borderRadius = TSize.md,
   });

@@ -35,10 +35,10 @@ class CategoryTab extends StatelessWidget {
                 onPressed: () {},
               ),
               const SizedBox(height: TSize.spaceBtwItems),
-              TGridLayout(
-                itemCount: 10,
-                itemBuilder: (_, index) => const TProductCardVertical(),
-              ),
+              // TGridLayout(
+              //   itemCount: 10,
+              //   itemBuilder: (_, index) => const TProductCardVertical(),
+              // ),
             ],
           ),
         ),
