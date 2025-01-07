@@ -1,15 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
-import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
-import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
-import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
-import 'package:shop_app_clothes/features/shop/screens/home/home.dart';
-import 'package:shop_app_clothes/utils/constants/size.dart';
+import 'package:shop_app_clothes/features/shop/models/Category.dart' as category_model;
+import 'package:shop_app_clothes/features/shop/models/Product.dart';
+
+import '../../../../common/widgets/appbar/appbar.dart';
+import '../../../../common/widgets/icons/t_circular_icon.dart';
+import '../../../../common/widgets/layouts/grid_layout.dart';
+import '../../../../common/widgets/products/product_cards/product_card_vertical.dart';
+import '../../../../utils/constants/size.dart';
+import '../home/home.dart';
+import '../service/CategoryService.dart';  // Keep this import as is
 
 class CategoriesScreen extends StatelessWidget {
-  final String categoryId; // Accept categoryId or categoryName as a parameter
+  final String categoryId;
 
   const CategoriesScreen({super.key, required this.categoryId});
 
@@ -17,9 +23,18 @@ class CategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TAppBar(
-        title: Text(
-          "Category",
-          style: Theme.of(context).textTheme.headlineMedium,
+        title: FutureBuilder<category_model.CategoryResponse>(
+          future: CategoryService.getCategoryById(categoryId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Loading...");
+            }
+            if (snapshot.hasData) {
+              return Text(snapshot.data!.name); // Dynamically set the category name
+            } else {
+              return Text("Category");
+            }
+          },
         ),
         actions: [
           TCircularIcon(
@@ -28,19 +43,48 @@ class CategoriesScreen extends StatelessWidget {
           ),
         ],
       ),
+      body: FutureBuilder<category_model.CategoryResponse>(
+        future: CategoryService.getCategoryById(categoryId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.products.isEmpty) {
+            return Center(child: Text('No products available'));
+          }
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(TSize.defaultSpace),
-          child: Column(
-            children: [
-              TGridLayout(
-                itemCount: 10,
-                itemBuilder: (_, index) => const TProductCardVertical(),
+          category_model.CategoryResponse category = snapshot.data!;
+          // Convert the products list from category_model.Product to Product
+          List<Product> products = category.products
+              .map((categoryProduct) => Product(
+            id: categoryProduct.id,
+            name: categoryProduct.name,
+            price: categoryProduct.price,
+            description: categoryProduct.description,
+            image: categoryProduct.image,
+            categoryName: categoryProduct.categoryName, colorSizes: [],
+          ))
+              .toList();
+
+          return SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(TSize.defaultSpace),
+              child: Column(
+                children: [
+                  TGridLayout(
+                    itemCount: products.length,
+                    itemBuilder: (_, index) {
+                      return TProductCardVertical(product: products[index]);
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

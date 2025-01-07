@@ -9,36 +9,42 @@ class CategoryService {
   // Function to get all categories with products
   static Future<List<CategoryResponse>> getCategoriesWithProducts() async {
     try {
-      final url =
-          '$_baseURL'; // Full URL to fetch categories and their products
-      print('Making request to: $url'); // Log the request URL for debugging
-
+      final url = '$_baseURL';
       final response = await http.get(Uri.parse(url));
-
-      print(
-        'Response Status: ${response.statusCode}',
-      ); // Log response status code
-      print('Response Body: ${response.body}'); // Log the response body
-
       if (response.statusCode == 200) {
-        // If the response is successful (status code 200), decode the body
         List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
-
-        // Map each item to CategoryResponse model
         return jsonData.map((data) => CategoryResponse.fromJson(data)).toList();
       } else {
-        // If the status code is not 200, throw an exception
-        print('Error: ${response.statusCode}');
         throw Exception('Failed to load categories');
       }
     } on SocketException {
-      // Handle network-related issues
-      print('Network Error: Failed to connect to the network.');
       throw Exception(
         'Failed to connect to the network. Please check your connection.',
       );
     } catch (e) {
-      // Catch any other unexpected errors
+      print("Unexpected error: $e");
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  // Function to get category by ID with products
+  static Future<CategoryResponse> getCategoryById(String categoryId) async {
+    try {
+      final url = '$_baseURL/search/$categoryId'; // Search category by ID
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = json.decode(
+          utf8.decode(response.bodyBytes),
+        );
+        return CategoryResponse.fromJson(jsonData);
+      } else {
+        throw Exception('Failed to load category by ID');
+      }
+    } on SocketException {
+      throw Exception(
+        'Failed to connect to the network. Please check your connection.',
+      );
+    } catch (e) {
       print("Unexpected error: $e");
       throw Exception('An unexpected error occurred: $e');
     }

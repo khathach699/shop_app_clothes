@@ -1,9 +1,11 @@
 class CategoryResponse {
+  final int id;
   final String name;
   final String image;
   final List<Product> products;
 
   CategoryResponse({
+    required this.id,
     required this.name,
     required this.image,
     required this.products,
@@ -14,6 +16,7 @@ class CategoryResponse {
     List<Product> productList = list.map((i) => Product.fromJson(i)).toList();
 
     return CategoryResponse(
+      id: json['id'] != null ? json['id'].toInt() : 0,
       name: json['name'],
       image: json['image'],
       products: productList,
@@ -40,7 +43,7 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
+      id: json['id'] != null ? json['id'].toInt() : 0,
       name: json['name'],
       price: json['price'],
       description: json['description'],
