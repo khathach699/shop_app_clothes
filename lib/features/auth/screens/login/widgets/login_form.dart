@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/navigation_menu.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/constants/text_strings.dart';
-import '../../../../shop/models/LoginResponse.dart';
-import '../../../../shop/screens/service/AuthService.dart';
 
+import '../../../../shop/models/User.dart';
+import '../../../../shop/screens/service/AuthService.dart';
 
 class TLoginForm extends StatefulWidget {
   const TLoginForm({super.key});
@@ -21,6 +23,8 @@ class _TLoginFormState extends State<TLoginForm> {
   bool _isLoading = false;
   String _errorMessage = '';
 
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
   Future<void> login() async {
     setState(() {
       _isLoading = true;
@@ -31,7 +35,7 @@ class _TLoginFormState extends State<TLoginForm> {
 
     try {
       // Gọi API đăng nhập từ AuthService
-      LoginResponse response = await authService.login(
+      User response = await authService.login(
         _usernameController.text,
         _passwordController.text,
       );
@@ -41,9 +45,20 @@ class _TLoginFormState extends State<TLoginForm> {
       });
 
       if (response.message == "Login successful") {
-        // Nếu đăng nhập thành công
-       // In ra thông báo để kiểm tra
-        Get.offAll(() => const NavigationMenu()); // Điều hướng đến trang tiếp theo
+        // Sau khi đăng nhập thành công, lấy thông tin user
+        String usernameOrEmail = _usernameController.text;
+        User user = await authService.getUserInfoByUsernameOrEmail(usernameOrEmail);
+
+        // Lưu userId vào GetStorage
+        final box = GetStorage();
+        box.write('userId', user.id!); // Giả sử `user.id` không null
+
+        // Lưu username/email và password vào secure storage (chỉ khi cần thiết)
+        await _secureStorage.write(key: 'username', value: _usernameController.text);
+        await _secureStorage.write(key: 'password', value: _passwordController.text);
+
+        // Điều hướng đến trang tiếp theo
+        Get.offAll(() => const NavigationMenu());
       } else {
         setState(() {
           _errorMessage = response.message ?? "Login failed";
