@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
-import 'package:shop_app_clothes/utils/constants/size.dart';
+import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/select_option_payment.dart';
 
-class TBillingPaymentSection extends StatelessWidget {
+class TBillingPaymentSection extends StatefulWidget {
   const TBillingPaymentSection({super.key});
+
+  @override
+  State<TBillingPaymentSection> createState() => _TBillingPaymentSectionState();
+}
+
+class _TBillingPaymentSectionState extends State<TBillingPaymentSection> {
+  String _selectedPaymentMethod = "Paypal"; // Phương thức mặc định
+
+  void _selectPaymentMethod() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SelectOptionPayment()),
+    );
+    if (result != null) {
+      setState(() {
+        _selectedPaymentMethod = result; // Cập nhật phương thức thanh toán
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,35 +31,17 @@ class TBillingPaymentSection extends StatelessWidget {
         TSectionHeading(
           title: "Payment Method",
           buttonTitle: "Change",
-          onPressed: () {},
+          onPressed: _selectPaymentMethod, // Mở màn hình chọn phương thức
         ),
-        const SizedBox(height: TSize.spaceBtwItems / 2),
-
+        const SizedBox(height: 16),
         Row(
           children: [
-            TRoundContainer(
-              width: 60,
-              height: 35,
-              padding: const EdgeInsets.all(TSize.sm),
-              child: const Image(
-                image: AssetImage(TImages.facebook),
-                fit: BoxFit.contain,
-              ),
+            const Icon(Icons.payment, size: 24, color: Colors.deepPurple),
+            const SizedBox(width: 16),
+            Text(
+              _selectedPaymentMethod,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            const SizedBox(height: TSize.spaceBtwItems / 2),
-            Text("Paypal", style: Theme.of(context).textTheme.bodyLarge),
-
-            TRoundContainer(
-              width: 60,
-              height: 35,
-              padding: const EdgeInsets.all(TSize.sm),
-              child: const Image(
-                image: AssetImage(TImages.facebook),
-                fit: BoxFit.contain,
-              ),
-            ),
-            const SizedBox(height: TSize.spaceBtwItems / 2),
-            Text("Money", style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
       ],

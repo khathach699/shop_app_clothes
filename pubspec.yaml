@@ -50,7 +50,7 @@ flutter:
     - assets/icons/hat.png
     - assets/icons/coat.png
     - assets/icons/dress.png
-    - assets/icons/payment.avif;
+    - assets/icons/payment1.jpg
 
   fonts:
     - family: Poppins

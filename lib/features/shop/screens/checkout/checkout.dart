@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
-import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
-import 'package:shop_app_clothes/common/widgets/products/cart/coupon_widget.dart';
 import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.dart';
-import 'package:shop_app_clothes/features/shop/screens/cart/widgets/cart_item.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/biling_payment_section.dart'
     as payment;
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
@@ -13,6 +10,9 @@ import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_
 import 'package:shop_app_clothes/navigation_menu.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
+
+import '../../../../common/widgets/custom_shapes/container/rounded_container.dart';
+import '../../../../common/widgets/products/cart/coupon_widget.dart';
 
 class TCheckOut extends StatelessWidget {
   const TCheckOut({super.key});
@@ -51,6 +51,7 @@ class TCheckOut extends StatelessWidget {
 
                     payment.TBillingPaymentSection(),
                     const SizedBox(height: TSize.spaceBtwItems),
+                    const Divider(),
                     TBillingAddressSection(),
                     const SizedBox(height: TSize.spaceBtwItems),
                   ],

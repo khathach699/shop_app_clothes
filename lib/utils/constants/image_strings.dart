@@ -24,5 +24,5 @@ class TImages {
   static const String shoe_icon = "assets/icons/shoe.png";
 
   //payment
-  static const String payment = "assets/icons/payment.avif";
+  static const String payment = "assets/icons/payment1.jpg";
 }
