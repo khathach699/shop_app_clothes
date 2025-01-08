@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app_clothes/common/widgets/products/cart/add_remove_button.dart';
 import 'package:shop_app_clothes/common/widgets/products/cart/cart_item.dart';
-import 'package:shop_app_clothes/common/widgets/texts/product_price_text.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
+
 import '../../../models/Cart.dart'; // Assuming you have a CartItem model
 
 class TCartItems extends StatelessWidget {
-  final List<CartItem> cartItems; // Dữ liệu giỏ hàng, defined with CartItem type
+  final List<CartItem>
+  cartItems; // Dữ liệu giỏ hàng, defined with CartItem type
   final bool showAddRemoveButtons;
   final Function(int) onRemoveItem; // Callback for item removal
 
-  const TCartItems({super.key, required this.cartItems, this.showAddRemoveButtons = true, required this.onRemoveItem});
+  const TCartItems({
+    super.key,
+    required this.cartItems,
+    this.showAddRemoveButtons = true,
+    required this.onRemoveItem,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      separatorBuilder: (_, __) => const SizedBox(height: TSize.spaceBtwSections),
+      separatorBuilder:
+          (_, __) => const SizedBox(height: TSize.spaceBtwSections),
       itemCount: cartItems.length,
       itemBuilder: (_, index) {
         final cartItem = cartItems[index];
@@ -28,10 +34,14 @@ class TCartItems extends StatelessWidget {
               colorName: cartItem.colorName,
               sizeName: cartItem.sizeName,
               productImage: cartItem.productName,
-              quantity: cartItem.quantity.toString(),  // Pass quantity here
+              quantity: cartItem.quantity.toString(), // Pass quantity here
               price: cartItem.price,
-              cartId: cartItem.cartId, // Assuming you have cartId to remove the item
-              onRemove: () => onRemoveItem(cartItem.cartId), // Pass the remove callback
+              cartId:
+                  cartItem
+                      .cartId, // Assuming you have cartId to remove the item
+              onRemove:
+                  () =>
+                      onRemoveItem(cartItem.cartId), // Pass the remove callback
             ),
 
             //
@@ -50,7 +60,6 @@ class TCartItems extends StatelessWidget {
             //   ],
             // ),
             // Divider(),
-
 
             // if (showAddRemoveButtons ) const SizedBox(height: TSize.spaceBtwItems),
             // if (showAddRemoveButtons)

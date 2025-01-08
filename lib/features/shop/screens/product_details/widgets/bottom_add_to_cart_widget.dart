@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
-
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
-import 'package:get_storage/get_storage.dart';
-import '../../../../../common/widgets/products/cart/cart_item.dart';
+
 import '../../../controllers/ProductController.dart';
 import '../../../models/CartRequest.dart';
-import '../../cart/cart.dart';
 import '../../checkout/checkout.dart';
 import '../../service/CartService.dart'; // Import CartService
+
 class TBottomAddToCartWidGet extends StatelessWidget {
   final int productId;
   final String productImage;
@@ -78,7 +74,6 @@ class TBottomAddToCartWidGet extends StatelessWidget {
             ],
           ),
 
-
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(TSize.md),
@@ -97,7 +92,7 @@ class TBottomAddToCartWidGet extends StatelessWidget {
                 userId: userId,
                 productId: productId,
                 colorId: selectedColorId, // Dynamic colorId
-                sizeId: selectedSizeId,   // Dynamic sizeId
+                sizeId: selectedSizeId, // Dynamic sizeId
                 quantity: quantity,
               );
 
@@ -111,17 +106,24 @@ class TBottomAddToCartWidGet extends StatelessWidget {
                 snackPosition: SnackPosition.TOP, // Position at the top
                 backgroundColor: Colors.lightGreen, // More vibrant green color
                 colorText: Colors.white, // White text color for better contrast
-                duration: Duration(seconds: 2), // Duration for which the snackbar will appear
-                margin: EdgeInsets.only(top: 50, left: 20), // Position the snackbar to top-left
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Adjust padding
-                borderRadius: 10, // Optional: Adds rounded corners for a smoother look
-                snackStyle: SnackStyle.FLOATING, // Optional: Makes the snackbar floating
+                duration: Duration(
+                  seconds: 2,
+                ), // Duration for which the snackbar will appear
+                margin: EdgeInsets.only(
+                  top: 50,
+                  left: 20,
+                ), // Position the snackbar to top-left
+                padding: EdgeInsets.symmetric(horizontal: 20), // Adjust padding
+                borderRadius:
+                    10, // Optional: Adds rounded corners for a smoother look
+                snackStyle:
+                    SnackStyle
+                        .FLOATING, // Optional: Makes the snackbar floating
               );
 
               // Optionally, show a confirmation or update the UI
             },
           ),
-
 
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -130,11 +132,8 @@ class TBottomAddToCartWidGet extends StatelessWidget {
               side: BorderSide(color: TColors.black),
             ),
             child: Text("Payment"),
-            onPressed: () =>
-              Get.to(() => TCheckOut())
-            ,
+            onPressed: () => Get.to(() => TCheckOut()),
           ),
-
         ],
       ),
     );

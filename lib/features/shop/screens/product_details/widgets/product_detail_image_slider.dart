@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/curved_edges/curved_edges_widget.dart';
 import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_roundted_image.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
-import 'package:get_storage/get_storage.dart';
+
 import '../../../controllers/WishlistController.dart';
 import '../../../models/Product.dart';
-import '../../service/WishlistService.dart';
 
 class TProductImageSlider extends StatefulWidget {
   final Product product;
@@ -69,14 +69,20 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemBuilder: (_, index) => TRoundedImage(
-                    imageUrl: widget.product.image,
-                    width: 80,
-                    backgroundColor: widget.dark ? TColors.dart : TColors.light, // Keep it as is, no change in background
-                    border: Border.all(color: TColors.primaryColor),
-                    padding: const EdgeInsets.all(TSize.sm),
-                  ),
-                  separatorBuilder: (_, __) => const SizedBox(width: TSize.spaceBtwItems),
+                  itemBuilder:
+                      (_, index) => TRoundedImage(
+                        imageUrl: widget.product.image,
+                        width: 80,
+                        backgroundColor:
+                            widget.dark
+                                ? TColors.dart
+                                : TColors
+                                    .light, // Keep it as is, no change in background
+                        border: Border.all(color: TColors.primaryColor),
+                        padding: const EdgeInsets.all(TSize.sm),
+                      ),
+                  separatorBuilder:
+                      (_, __) => const SizedBox(width: TSize.spaceBtwItems),
                   itemCount: 6,
                 ),
               ),
@@ -86,18 +92,23 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
               actions: [
                 Obx(() {
                   return TCircularIcon(
-                    icon: _wishlistController.isInWishlist.value
-                        ? Iconsax.heart5
-                        : Iconsax.heart,
-                    color: _wishlistController.isInWishlist.value
-                        ? Colors.red
-                        : Colors.grey,
+                    icon:
+                        _wishlistController.isInWishlist.value
+                            ? Iconsax.heart5
+                            : Iconsax.heart,
+                    color:
+                        _wishlistController.isInWishlist.value
+                            ? Colors.red
+                            : Colors.grey,
                     onPressed: () async {
                       final box = GetStorage();
                       int? userId = box.read('userId');
                       if (userId != null) {
                         // Toggle wishlist when the button is pressed
-                        await _wishlistController.toggleWishlist(userId, widget.product.id);
+                        await _wishlistController.toggleWishlist(
+                          userId,
+                          widget.product.id,
+                        );
                       }
                     },
                   );
@@ -109,5 +120,4 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
       ),
     );
   }
-
 }
