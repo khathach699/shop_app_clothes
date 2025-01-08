@@ -33,7 +33,7 @@ class TCheckOut extends StatelessWidget {
           padding: EdgeInsets.all(TSize.defaultSpace),
           child: Column(
             children: [
-              TCartItems(showAddRemoveButtons: false),
+              // TCartItems(showAddRemoveButtons: false),
               SizedBox(height: TSize.spaceBtwSections),
 
               TCouponCode(),
@@ -66,7 +66,7 @@ class TCheckOut extends StatelessWidget {
           onPressed:
               () => Get.to(
                 () => SuccessScreen(
-                  image: TImages.shoe1,
+                  image: TImages.payment,
                   title: 'Payment Successful!',
                   subTitle: 'Your item has been successfully delivered.',
                   onPressed: () => Get.offAll(() => const NavigationMenu()),

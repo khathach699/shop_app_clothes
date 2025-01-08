@@ -22,4 +22,7 @@ class TImages {
   static const String hat_icon = "assets/icons/hat.png";
   static const String t_shirt_icon = "assets/icons/t-shirt.png";
   static const String shoe_icon = "assets/icons/shoe.png";
+
+  //payment
+  static const String payment = "assets/icons/payment.avif";
 }

@@ -6,14 +6,13 @@ import 'package:shop_app_clothes/features/shop/controllers/ProductController.dar
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 import '../../../models/Product.dart';
-
 class TProductAttributes extends StatelessWidget {
   final Product product;
+
   const TProductAttributes({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    // Instantiate the controller using GetX
     final ProductController productController = Get.put(ProductController());
 
     return Column(
@@ -26,25 +25,19 @@ class TProductAttributes extends StatelessWidget {
             const SizedBox(height: TSize.spaceBtwItems / 2),
             Wrap(
               spacing: 8,
-              children:
-                  product.colorSizes.map((colorSize) {
-                    return Obx(() {
-                      // Use Obx to observe changes
-                      return TChoiceChip(
-                        text: colorSize.colorName,
-                        selected:
-                            productController.selectedColor.value ==
-                            colorSize.colorName,
-                        onSelected: (value) {
-                          if (value) {
-                            productController.setSelectedColor(
-                              colorSize.colorName,
-                            );
-                          }
-                        },
-                      );
-                    });
-                  }).toList(),
+              children: product.colorSizes.map((colorSize) {
+                return Obx(() {
+                  return TChoiceChip(
+                    text: colorSize.colorName,
+                    selected: productController.selectedColor.value == colorSize.colorName,
+                    onSelected: (value) {
+                      if (value) {
+                        productController.setSelectedColor(colorSize.colorName);
+                      }
+                    },
+                  );
+                });
+              }).toList(),
             ),
           ],
         ),
@@ -58,24 +51,19 @@ class TProductAttributes extends StatelessWidget {
             SizedBox(height: TSize.spaceBtwItems / 2),
             Wrap(
               spacing: 12,
-              children:
-                  product.colorSizes.map((colorSize) {
-                    return Obx(() {
-                      return TChoiceChip(
-                        text: colorSize.sizeName,
-                        selected:
-                            productController.selectedSize.value ==
-                            colorSize.sizeName,
-                        onSelected: (value) {
-                          if (value) {
-                            productController.setSelectedSize(
-                              colorSize.sizeName,
-                            );
-                          }
-                        },
-                      );
-                    });
-                  }).toList(),
+              children: product.colorSizes.map((colorSize) {
+                return Obx(() {
+                  return TChoiceChip(
+                    text: colorSize.sizeName,
+                    selected: productController.selectedSize.value == colorSize.sizeName,
+                    onSelected: (value) {
+                      if (value) {
+                        productController.setSelectedSize(colorSize.sizeName);
+                      }
+                    },
+                  );
+                });
+              }).toList(),
             ),
           ],
         ),

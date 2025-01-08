@@ -25,6 +25,8 @@ dependencies:
   readmore: ^3.0.0
   flutter_rating_bar: ^4.0.1
   flutter_secure_storage: ^9.2.3
+  toastification: ^2.3.0
+
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +50,7 @@ flutter:
     - assets/icons/hat.png
     - assets/icons/coat.png
     - assets/icons/dress.png
+    - assets/icons/payment.avif;
 
   fonts:
     - family: Poppins

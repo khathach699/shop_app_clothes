@@ -15,6 +15,7 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 class StoreScreen extends StatelessWidget {
+
   const StoreScreen({super.key});
 
   @override

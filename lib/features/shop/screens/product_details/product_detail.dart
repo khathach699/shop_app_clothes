@@ -24,7 +24,7 @@ class ProductDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
-      bottomNavigationBar: TBottomAddToCartWidGet(),
+      bottomNavigationBar: TBottomAddToCartWidGet(productId: product.id, productImage: product.image,  price: product.price,),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -48,14 +48,9 @@ class ProductDetail extends StatelessWidget {
                   // attributes
                   TProductAttributes(product: product),
                   SizedBox(height: TSize.spaceBtwSections),
-                  // checkout
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      child: Text("Add to Cart"),
-                      onPressed: () {},
-                    ),
-                  ),
+
+
+                  Divider(),
                   SizedBox(height: TSize.spaceBtwSections),
                   // description
                   const TSectionHeading(

@@ -31,6 +31,18 @@ class TBillingPaymentSection extends StatelessWidget {
             ),
             const SizedBox(height: TSize.spaceBtwItems / 2),
             Text("Paypal", style: Theme.of(context).textTheme.bodyLarge),
+
+            TRoundContainer(
+              width: 60,
+              height: 35,
+              padding: const EdgeInsets.all(TSize.sm),
+              child: const Image(
+                image: AssetImage(TImages.facebook),
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: TSize.spaceBtwItems / 2),
+            Text("Money", style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
       ],

@@ -4,7 +4,8 @@ import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TProductQuantityWithAddAndRemoveButton extends StatelessWidget {
-  const TProductQuantityWithAddAndRemoveButton({super.key});
+  final String quantity;
+  const TProductQuantityWithAddAndRemoveButton({super.key, required this.quantity});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class TProductQuantityWithAddAndRemoveButton extends StatelessWidget {
           size: TSize.lg,
         ),
         const SizedBox(width: TSize.spaceBtwItems),
-        Text("2", style: Theme.of(context).textTheme.titleSmall),
+        Text(quantity, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(width: TSize.spaceBtwItems),
         TCircularIcon(
           icon: Iconsax.add,

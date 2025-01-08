@@ -5,6 +5,7 @@ import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/text_strings.dart';
 
 class THomeAppBar extends StatelessWidget {
+
   const THomeAppBar({super.key});
 
   @override
