@@ -12,7 +12,7 @@ class SelectOptionPayment extends StatefulWidget {
 class _SelectOptionPaymentState extends State<SelectOptionPayment> {
   final PaymentMethodService _service = PaymentMethodService();
   List<PaymentMethod> _paymentMethods = [];
-  String? _selectedPaymentMethod;
+  int? _selectedPaymentMethodId;
 
   @override
   void initState() {
@@ -25,10 +25,9 @@ class _SelectOptionPaymentState extends State<SelectOptionPayment> {
       final methods = await _service.fetchPaymentMethods();
       setState(() {
         _paymentMethods = methods;
-        _selectedPaymentMethod = methods.isNotEmpty ? methods[0].name : null;
+        _selectedPaymentMethodId = methods.isNotEmpty ? methods[0].id : null;
       });
     } catch (error) {
-      // Handle errors
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Lỗi tải dữ liệu: $error')));
@@ -60,14 +59,13 @@ class _SelectOptionPaymentState extends State<SelectOptionPayment> {
                     ),
                     const SizedBox(height: 16),
                     ..._paymentMethods.map(
-                      (method) => RadioListTile<String>(
+                      (method) => RadioListTile<int>(
                         title: Text(method.name),
-                        // subtitle: Text(method.description ?? 'Không có mô tả'),
-                        value: method.name,
-                        groupValue: _selectedPaymentMethod,
+                        value: method.id,
+                        groupValue: _selectedPaymentMethodId,
                         onChanged: (value) {
                           setState(() {
-                            _selectedPaymentMethod = value!;
+                            _selectedPaymentMethodId = value!;
                           });
                         },
                         activeColor: Colors.deepPurple,
@@ -77,9 +75,11 @@ class _SelectOptionPaymentState extends State<SelectOptionPayment> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_selectedPaymentMethod != null) {
-                            // Trả về phương thức thanh toán đã chọn
-                            Navigator.pop(context, _selectedPaymentMethod);
+                          if (_selectedPaymentMethodId != null) {
+                            Navigator.pop(
+                              context,
+                              _selectedPaymentMethodId, // Trả về ID của phương thức thanh toán
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

@@ -34,8 +34,6 @@ class CartService {
     }
   }
 
-
-
   // Add an item to the cart
   Future<CartItem?> addToCart(CartRequest cartRequest) async {
     try {
@@ -60,7 +58,6 @@ class CartService {
     }
   }
 
-
   // Remove an item from the cart by its ID
   Future<bool> removeFromCart(int cartId) async {
     try {
@@ -79,15 +76,16 @@ class CartService {
     }
   }
 
-
   // Get the cart for a specific user
   Future<List<CartItem>?> getCart(int userId) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/list/$userId'));
-      print('Response body: ${response.body}');  // Debugging print
+      print('Response body: ${response.body}'); // Debugging print
 
-      final data = await _handleResponse(response);  // Now `data` will be a List<dynamic>
-      print('Parsed Data: $data');  // Debugging print to see the parsed data
+      final data = await _handleResponse(
+        response,
+      ); // Now `data` will be a List<dynamic>
+      print('Parsed Data: $data'); // Debugging print to see the parsed data
 
       // Map each item in the list to a CartItem object
       return List<CartItem>.from(data.map((item) => CartItem.fromJson(item)));

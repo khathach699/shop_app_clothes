@@ -7,4 +7,11 @@ class OrderItem {
   Map<String, dynamic> toJson() {
     return {"productId": productId, "quantity": quantity};
   }
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+      productId: json['productId'] as int,
+      quantity: json['quantity'] as int,
+    );
+  }
 }

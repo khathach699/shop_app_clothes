@@ -1,5 +1,6 @@
 class CartItem {
   final int cartId;
+  final int productId;
   final String productName;
   final String colorName;
   final String sizeName;
@@ -10,6 +11,7 @@ class CartItem {
 
   CartItem({
     required this.cartId,
+    required this.productId,
     required this.productName,
     required this.colorName,
     required this.sizeName,
@@ -20,23 +22,28 @@ class CartItem {
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
-    print('Parsing CartItem: $json');  // Add this to see what data is being parsed
+    print(
+      'Parsing CartItem: $json',
+    ); // Add this to see what data is being parsed
     return CartItem(
       cartId: json['cartId'],
+      productId: json['productId'],
       productName: json['productName'],
       colorName: json['colorName'],
       sizeName: json['sizeName'],
       quantity: json['quantity'],
       price: json['price'],
-      addedAt: json['addedAt'] != null
-          ? DateTime.parse(json['addedAt'])
-          : null,  // Check if the field exists and is in the correct format
+      addedAt:
+          json['addedAt'] != null
+              ? DateTime.parse(json['addedAt'])
+              : null, // Check if the field exists and is in the correct format
       productImage: json['productImage'], // Parse productImage from response
     );
   }
 
   Map<String, dynamic> toJson() => {
     'cartId': cartId,
+    'productId': productId,
     'productName': productName,
     'colorName': colorName,
     'sizeName': sizeName,

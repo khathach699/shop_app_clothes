@@ -6,7 +6,7 @@ class Order {
   final String userName;
   final String address;
   final String phoneNumber;
-  final List<OrderItem> orderItems;
+  final List<OrderItem> orderItems; // Sử dụng OrderItem
 
   Order({
     required this.userId,
@@ -16,6 +16,33 @@ class Order {
     required this.phoneNumber,
     required this.orderItems,
   });
+
+  // Chuyển đổi CartItem sang OrderItem
+  static Order fromCartItems(
+    int userId,
+    int paymentMethodId,
+    String userName,
+    String address,
+    String phoneNumber,
+    List<OrderItem> cartItems,
+  ) {
+    List<OrderItem> orderItems =
+        cartItems.map((cartItem) {
+          return OrderItem(
+            productId: cartItem.productId,
+            quantity: cartItem.quantity,
+          );
+        }).toList();
+
+    return Order(
+      userId: userId,
+      paymentMethodId: paymentMethodId,
+      userName: userName,
+      address: address,
+      phoneNumber: phoneNumber,
+      orderItems: orderItems,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {

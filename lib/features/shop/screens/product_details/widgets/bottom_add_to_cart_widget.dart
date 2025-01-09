@@ -121,6 +121,46 @@ class TBottomAddToCartWidGet extends StatelessWidget {
                         .FLOATING, // Optional: Makes the snackbar floating
               );
 
+              final box = GetStorage();
+
+              // Read the cart items and cast them safely
+              List<Map<String, dynamic>> cartItems = [];
+              var storedItems = box.read('cartItems');
+
+              // Check if the cart is already stored
+              if (storedItems != null) {
+                // Ensure the stored data is of the correct type
+                cartItems = List<Map<String, dynamic>>.from(storedItems);
+              }
+
+              // Check if the product already exists in the cart
+              bool productExists = false;
+              for (var item in cartItems) {
+                if (item['productId'] == productId) {
+                  // If the product exists, update the quantity
+                  item['quantity'] +=
+                      quantity; // You can also set this to the desired quantity if you want to overwrite
+                  productExists = true;
+                  break;
+                }
+              }
+
+              // If the product does not exist, add it to the cart
+              if (!productExists) {
+                cartItems.add({
+                  "productId": productId,
+                  "quantity": quantity,
+                  "colorId": selectedColorId,
+                  "sizeId": selectedSizeId,
+                });
+              }
+
+              // Store the updated cart back to GetStorage
+              await box.write('cartItems', cartItems);
+
+              // Debug print to check cartItems after updating
+              print('Updated cart items: $cartItems');
+
               // Optionally, show a confirmation or update the UI
             },
           ),
@@ -131,8 +171,52 @@ class TBottomAddToCartWidGet extends StatelessWidget {
               backgroundColor: Colors.blue,
               side: BorderSide(color: TColors.black),
             ),
-            child: Text("Payment"),
-            onPressed: () => Get.to(() => TCheckOut()),
+            child: Text("Thanh toán"),
+            onPressed: () async {
+              // Kiểm tra xem người dùng đã chọn color và size hay chưa
+              int selectedColorId = productController.getSelectedColorId();
+              int selectedSizeId = productController.getSelectedSizeId();
+              int quantity = productController.quantity.value;
+              print("$quantity, $selectedColorId, $selectedSizeId");
+
+              if (selectedColorId == 0 || selectedSizeId == 0) {
+                // Thông báo lỗi nếu thiếu thông tin
+                Get.snackbar(
+                  'Thiếu thông tin', // Tiêu đề
+                  'Vui lòng chọn màu sắc và kích thước trước khi thanh toán.',
+                  snackPosition: SnackPosition.TOP,
+                  backgroundColor: Colors.redAccent,
+                  colorText: Colors.white,
+                  duration: Duration(seconds: 2),
+                );
+                return;
+              }
+
+              // Nếu đầy đủ thông tin, tiếp tục xử lý thanh toán
+              CartRequest cartRequest = CartRequest(
+                userId: userId, // ID người dùng
+                productId: productId,
+                colorId: selectedColorId,
+                sizeId: selectedSizeId,
+                quantity: quantity,
+              );
+
+              // Thêm vào giỏ hàng nếu cần (tuỳ chọn)
+              CartService cartService = CartService();
+              await cartService.addToCart(cartRequest);
+
+              // Thông báo thành công và chuyển hướng sang màn hình thanh toán
+              Get.snackbar(
+                'Đang chuyển hướng', // Tiêu đề
+                'Bạn đang được chuyển sang thanh toán.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: Colors.blue,
+                colorText: Colors.white,
+                duration: Duration(seconds: 2),
+              );
+
+              Get.to(() => TCheckOut(), arguments: []);
+            },
           ),
         ],
       ),

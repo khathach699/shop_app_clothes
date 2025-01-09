@@ -3,7 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:shop_app_clothes/features/shop/models/WishlistItem.dart';
 
 import '../../models/Product.dart';
+
 class WishListService {
+  // 10.0.2.2
+  //192.168.100.12:8080
   static const String baseUrl = "http://10.0.2.2:8080/api/wishlist";
 
   // Get wishlist of a user
@@ -45,7 +48,10 @@ class WishListService {
   }
 
   // Remove product from wishlist
-  static Future<void> removeProductFromWishlist(int userId, int productId) async {
+  static Future<void> removeProductFromWishlist(
+    int userId,
+    int productId,
+  ) async {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/$userId/remove/$productId'),
@@ -63,7 +69,9 @@ class WishListService {
 
   // Check if product is in wishlist
   static Future<bool> isProductInWishlist(int userId, int productId) async {
-    final response = await http.get(Uri.parse('$baseUrl/$userId/exists/$productId'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/$userId/exists/$productId'),
+    );
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return data; // Trả về true hoặc false từ API

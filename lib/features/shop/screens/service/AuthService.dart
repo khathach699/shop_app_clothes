@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../models/User.dart';
 
-
 class AuthService {
+  // 192.168.100.12:8080
   final String apiUrl = 'http://10.0.2.2:8080/api/auth/login'; // URL API
 
   Future<User> login(String usernameOrEmail, String password) async {
@@ -12,6 +12,7 @@ class AuthService {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
+
         body: json.encode({
           'usernameOrEmail': usernameOrEmail,
           'password': password,
@@ -28,9 +29,11 @@ class AuthService {
       throw Exception('An error occurred: $error');
     }
   }
+
   // get info user by user
-  Future<User> getUserInfoByUsernameOrEmail(String usernameOrEmail) async{
-    final String userApiUrl = 'http://10.0.2.2:8080/api/auth/username/$usernameOrEmail';
+  Future<User> getUserInfoByUsernameOrEmail(String usernameOrEmail) async {
+    final String userApiUrl =
+        'http://10.0.2.2:8080/api/auth/username/$usernameOrEmail';
 
     try {
       final response = await http.get(Uri.parse(userApiUrl));
@@ -44,5 +47,3 @@ class AuthService {
     }
   }
 }
-
-

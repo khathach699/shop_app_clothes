@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.dart';
 import 'package:shop_app_clothes/features/shop/controllers/AddressController.dart';
+import 'package:shop_app_clothes/features/shop/controllers/CartController.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/biling_payment_section.dart'
     as payment;
@@ -14,6 +16,8 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 
 import '../../../../common/widgets/custom_shapes/container/rounded_container.dart';
 import '../../../../common/widgets/products/cart/coupon_widget.dart';
+import 'package:shop_app_clothes/features/shop/models/Order.dart'; // Import Order model
+import 'package:shop_app_clothes/features/shop/models/OrderItem.dart'; // Import OrderItem model
 
 class TCheckOut extends StatelessWidget {
   const TCheckOut({super.key});
@@ -22,26 +26,45 @@ class TCheckOut extends StatelessWidget {
   Widget build(BuildContext context) {
     final AddressController addressController = Get.put(AddressController());
     final OrderService orderService = OrderService();
+    final box = GetStorage();
+    int userId = box.read('userId') ?? 0;
+    final CartController controller = Get.find<CartController>();
+
+    // Lấy cartItems được truyền từ CartScreen
+    final Map<String, dynamic> arguments = Get.arguments ?? {};
+    List<dynamic> cartItems = arguments['cartItems'] ?? [];
+    print("${cartItems}");
+
+    // Mã phương thức thanh toán mặc định
+    int selectedPaymentMethodId = 1;
+
+    // Cập nhật mã phương thức thanh toán
+    void updatePaymentMethodId(int selectedId) {
+      selectedPaymentMethodId = selectedId;
+    }
 
     Future<void> _handleCheckout() async {
-      // Chuẩn bị dữ liệu đơn hàng
-      final Map<String, dynamic> orderData = {
-        "userId": 1, // Thay bằng ID người dùng
-        "paymentMethodId": 1, // Mapping với phương thức thanh toán
-        "userName": addressController.name.value,
-        "address": addressController.address.value,
-        "phoneNumber": addressController.phone.value,
-        "orderItems": [
-          {
-            "productId": 1,
-            "quantity": 2,
-          }, // Thay bằng sản phẩm thực tế trong giỏ hàng
-          {"productId": 2, "quantity": 1},
-        ],
-      };
+      // Chuyển đổi CartItems thành OrderItems
+      List<OrderItem> orderItems =
+          cartItems.map((cartItem) {
+            return OrderItem(
+              productId: cartItem.productId,
+              quantity: cartItem.quantity,
+            );
+          }).toList();
+
+      // Tạo đối tượng Order
+      Order order = Order.fromCartItems(
+        userId,
+        selectedPaymentMethodId,
+        addressController.name.value,
+        addressController.address.value,
+        addressController.phone.value,
+        orderItems,
+      );
 
       // Gửi yêu cầu tạo đơn hàng
-      bool success = await orderService.createOrder(orderData);
+      bool success = await orderService.createOrder(order.toJson());
 
       if (success) {
         // Hiển thị màn hình thành công
@@ -87,11 +110,11 @@ class TCheckOut extends StatelessWidget {
                   children: [
                     TBillingAmountSection(),
                     const SizedBox(height: TSize.spaceBtwItems),
-
                     const Divider(),
                     const SizedBox(height: TSize.spaceBtwItems),
-
-                    payment.TBillingPaymentSection(),
+                    payment.TBillingPaymentSection(
+                      onPaymentMethodSelected: updatePaymentMethodId,
+                    ),
                     const SizedBox(height: TSize.spaceBtwItems),
                     const Divider(),
                     TBillingAddressSection(),
@@ -106,8 +129,13 @@ class TCheckOut extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(TSize.defaultSpace),
         child: ElevatedButton(
-          onPressed: _handleCheckout, // Gọi hàm xử lý khi nhấn "CheckOut"
-          child: Text("CheckOut \$265"),
+          onPressed: _handleCheckout,
+          child: Obx(
+            () => Text(
+              "\$${controller.totalPrice.toStringAsFixed(2)}",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
         ),
       ),
     );

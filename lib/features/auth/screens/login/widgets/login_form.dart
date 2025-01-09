@@ -21,9 +21,30 @@ class _TLoginFormState extends State<TLoginForm> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _rememberMe = false; // Tracks "Remember Me" checkbox state
   String _errorMessage = '';
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    // Load saved username and password if "Remember Me" was selected
+    String? savedUsername = await _secureStorage.read(key: 'username');
+    String? savedPassword = await _secureStorage.read(key: 'password');
+
+    if (savedUsername != null && savedPassword != null) {
+      setState(() {
+        _usernameController.text = savedUsername;
+        _passwordController.text = savedPassword;
+        _rememberMe = true; // Set checkbox state
+      });
+    }
+  }
 
   Future<void> login() async {
     setState(() {
@@ -34,7 +55,7 @@ class _TLoginFormState extends State<TLoginForm> {
     AuthService authService = AuthService();
 
     try {
-      // Gọi API đăng nhập từ AuthService
+      // Call API for login from AuthService
       User response = await authService.login(
         _usernameController.text,
         _passwordController.text,
@@ -45,19 +66,32 @@ class _TLoginFormState extends State<TLoginForm> {
       });
 
       if (response.message == "Login successful") {
-        // Sau khi đăng nhập thành công, lấy thông tin user
+        // Fetch user information
         String usernameOrEmail = _usernameController.text;
-        User user = await authService.getUserInfoByUsernameOrEmail(usernameOrEmail);
+        User user = await authService.getUserInfoByUsernameOrEmail(
+          usernameOrEmail,
+        );
 
-        // Lưu userId vào GetStorage
+        // Save userId to GetStorage
         final box = GetStorage();
-        box.write('userId', user.id!); // Giả sử `user.id` không null
+        box.write('userId', user.id!); // Assuming `user.id` is not null
 
-        // Lưu username/email và password vào secure storage (chỉ khi cần thiết)
-        await _secureStorage.write(key: 'username', value: _usernameController.text);
-        await _secureStorage.write(key: 'password', value: _passwordController.text);
+        // Save username/email and password to secure storage if "Remember Me" is checked
+        if (_rememberMe) {
+          await _secureStorage.write(
+            key: 'username',
+            value: _usernameController.text,
+          );
+          await _secureStorage.write(
+            key: 'password',
+            value: _passwordController.text,
+          );
+        } else {
+          await _secureStorage.delete(key: 'username');
+          await _secureStorage.delete(key: 'password');
+        }
 
-        // Điều hướng đến trang tiếp theo
+        // Navigate to the next page
         Get.offAll(() => const NavigationMenu());
       } else {
         setState(() {
@@ -98,13 +132,20 @@ class _TLoginFormState extends State<TLoginForm> {
             ),
             const SizedBox(height: TSize.spaceBtwInputField / 2),
 
-            // remember me and forgot password
+            // Remember Me and Forgot Password
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    Checkbox(value: true, onChanged: (value) {}),
+                    Checkbox(
+                      value: _rememberMe,
+                      onChanged: (value) {
+                        setState(() {
+                          _rememberMe = value!;
+                        });
+                      },
+                    ),
                     const Text(TText.rememberMe),
                   ],
                 ),
@@ -117,18 +158,20 @@ class _TLoginFormState extends State<TLoginForm> {
 
             const SizedBox(height: TSize.spaceBtwSections),
 
-            // sign in button
+            // Sign In Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _isLoading ? null : login,
-                child: _isLoading
-                    ? const CircularProgressIndicator() // Hiển thị loading khi đang đăng nhập
-                    : Text(TText.signIn),
+                child:
+                    _isLoading
+                        ? const CircularProgressIndicator() // Show loading when logging in
+                        : Text(TText.signIn),
               ),
             ),
             const SizedBox(height: TSize.spaceBtwItems),
-            // sign up button
+
+            // Sign Up Button
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
@@ -136,12 +179,13 @@ class _TLoginFormState extends State<TLoginForm> {
                 child: Text(TText.signUp),
               ),
             ),
+
             if (_errorMessage.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
           ],
