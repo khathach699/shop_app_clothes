@@ -6,6 +6,10 @@ class ProductController extends GetxController {
   var selectedColor = ''.obs;
   var quantity = 1.obs;
 
+  // Price for the selected product
+  double productPrice =
+      50.0; // Example price. You should fetch this dynamically.
+
   // Color and Size Mappings (You should adjust these values based on your actual data)
   final Map<String, int> colorMapping = {
     'white': 1,
@@ -39,14 +43,13 @@ class ProductController extends GetxController {
     }
   }
 
-  // Function to get the selected color's ID
   int getSelectedColorId() {
-    return colorMapping[selectedColor.value] ?? 0;  // Default to 0 if not found
+    return colorMapping[selectedColor.value] ?? 0; // Default to 0 if not found
   }
 
   // Function to get the selected size's ID
   int getSelectedSizeId() {
-    return sizeMapping[selectedSize.value] ?? 0;  // Default to 0 if not found
+    return sizeMapping[selectedSize.value] ?? 0; // Default to 0 if not found
   }
 
   // Function to increment quantity
@@ -59,5 +62,10 @@ class ProductController extends GetxController {
     if (quantity.value > 1) {
       quantity.value--;
     }
+  }
+
+  // Function to calculate total price
+  double get totalPrice {
+    return productPrice * quantity.value;
   }
 }

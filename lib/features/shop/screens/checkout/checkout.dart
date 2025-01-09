@@ -5,6 +5,7 @@ import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.dart';
 import 'package:shop_app_clothes/features/shop/controllers/AddressController.dart';
 import 'package:shop_app_clothes/features/shop/controllers/CartController.dart';
+import 'package:shop_app_clothes/features/shop/controllers/ProductController.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/biling_payment_section.dart'
     as payment;
@@ -28,11 +29,28 @@ class TCheckOut extends StatelessWidget {
     final OrderService orderService = OrderService();
     final box = GetStorage();
     int userId = box.read('userId') ?? 0;
-    final CartController controller = Get.find<CartController>();
+
+    // Eagerly initialize CartController
+    final CartController controller = Get.put(CartController());
+    final ProductController productController = Get.put(ProductController());
 
     // Lấy cartItems được truyền từ CartScreen
     final Map<String, dynamic> arguments = Get.arguments ?? {};
-    List<dynamic> cartItems = arguments['cartItems'] ?? [];
+
+    // Kiểm tra nếu có giỏ hàng (List)
+    List<dynamic> cartItems = [];
+    if (arguments['cartItems'] is List) {
+      cartItems = arguments['cartItems'];
+    }
+
+    // Kiểm tra nếu có đơn hàng (Map)
+    Map<String, dynamic> order = {};
+    if (arguments['order'] is Map) {
+      order = arguments['order'];
+    }
+
+    // Bây giờ bạn có thể xử lý `cartItems` hoặc `order` tùy thuộc vào dữ liệu nhận được.
+
     print("${cartItems}");
 
     // Mã phương thức thanh toán mặc định
@@ -44,14 +62,26 @@ class TCheckOut extends StatelessWidget {
     }
 
     Future<void> _handleCheckout() async {
-      // Chuyển đổi CartItems thành OrderItems
-      List<OrderItem> orderItems =
-          cartItems.map((cartItem) {
-            return OrderItem(
-              productId: cartItem.productId,
-              quantity: cartItem.quantity,
-            );
-          }).toList();
+      List<OrderItem> orderItems = [];
+
+      if (cartItems.isNotEmpty) {
+        // Nếu cartItems là List
+        orderItems =
+            cartItems.map((cartItem) {
+              return OrderItem(
+                productId: cartItem.productId,
+                quantity: cartItem.quantity,
+              );
+            }).toList();
+      } else if (arguments.containsKey('productId')) {
+        // Kiểm tra nếu là Map (chỉ kiểm tra productId)
+        orderItems.add(
+          OrderItem(
+            productId: arguments['productId'],
+            quantity: arguments['quantity'],
+          ),
+        );
+      }
 
       // Tạo đối tượng Order
       Order order = Order.fromCartItems(
@@ -130,12 +160,23 @@ class TCheckOut extends StatelessWidget {
         padding: const EdgeInsets.all(TSize.defaultSpace),
         child: ElevatedButton(
           onPressed: _handleCheckout,
-          child: Obx(
-            () => Text(
-              "\$${controller.totalPrice.toStringAsFixed(2)}",
+          child: Obx(() {
+            // Check if CartController's totalPrice is null or 0
+            double total;
+            if (cartItems.isNotEmpty) {
+              total =
+                  controller.totalPrice > 0
+                      ? productController.totalPrice
+                      : controller.totalPrice;
+            } else {
+              total = productController.totalPrice;
+            }
+
+            return Text(
+              "\$${total.toStringAsFixed(2)}",
               style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );

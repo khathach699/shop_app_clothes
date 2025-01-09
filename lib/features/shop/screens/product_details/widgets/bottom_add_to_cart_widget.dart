@@ -177,7 +177,6 @@ class TBottomAddToCartWidGet extends StatelessWidget {
               int selectedColorId = productController.getSelectedColorId();
               int selectedSizeId = productController.getSelectedSizeId();
               int quantity = productController.quantity.value;
-              print("$quantity, $selectedColorId, $selectedSizeId");
 
               if (selectedColorId == 0 || selectedSizeId == 0) {
                 // Thông báo lỗi nếu thiếu thông tin
@@ -192,19 +191,6 @@ class TBottomAddToCartWidGet extends StatelessWidget {
                 return;
               }
 
-              // Nếu đầy đủ thông tin, tiếp tục xử lý thanh toán
-              CartRequest cartRequest = CartRequest(
-                userId: userId, // ID người dùng
-                productId: productId,
-                colorId: selectedColorId,
-                sizeId: selectedSizeId,
-                quantity: quantity,
-              );
-
-              // Thêm vào giỏ hàng nếu cần (tuỳ chọn)
-              CartService cartService = CartService();
-              await cartService.addToCart(cartRequest);
-
               // Thông báo thành công và chuyển hướng sang màn hình thanh toán
               Get.snackbar(
                 'Đang chuyển hướng', // Tiêu đề
@@ -215,7 +201,16 @@ class TBottomAddToCartWidGet extends StatelessWidget {
                 duration: Duration(seconds: 2),
               );
 
-              Get.to(() => TCheckOut(), arguments: []);
+              // Pass data to checkout screen
+              Get.to(
+                () => TCheckOut(),
+                arguments: {
+                  'productId': productId,
+                  'selectedColorId': selectedColorId,
+                  'selectedSizeId': selectedSizeId,
+                  'quantity': quantity,
+                },
+              );
             },
           ),
         ],
