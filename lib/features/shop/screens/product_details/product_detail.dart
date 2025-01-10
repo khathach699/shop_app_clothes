@@ -15,7 +15,6 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 class ProductDetail extends StatelessWidget {
-  // Thêm thông tin sản phẩm vào constructor
   final Product product;
 
   const ProductDetail({super.key, required this.product});
@@ -24,7 +23,11 @@ class ProductDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
-      bottomNavigationBar: TBottomAddToCartWidGet(productId: product.id, productImage: product.image,  price: product.price,),
+      bottomNavigationBar: TBottomAddToCartWidGet(
+        productId: product.id,
+        productImage: product.image,
+        price: product.price,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -48,7 +51,6 @@ class ProductDetail extends StatelessWidget {
                   // attributes
                   TProductAttributes(product: product),
                   SizedBox(height: TSize.spaceBtwSections),
-
 
                   Divider(),
                   SizedBox(height: TSize.spaceBtwSections),
@@ -82,7 +84,10 @@ class ProductDetail extends StatelessWidget {
                         showActionButton: false,
                       ),
                       IconButton(
-                        onPressed: () => Get.to(() => TProductReview()),
+                        onPressed:
+                            () => Get.to(
+                              () => TProductReview(productId: product.id),
+                            ),
                         icon: const Icon(Iconsax.arrow_right_3, size: 18),
                       ),
                     ],

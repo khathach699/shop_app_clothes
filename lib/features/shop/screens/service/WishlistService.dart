@@ -1,6 +1,6 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:shop_app_clothes/features/shop/models/WishlistItem.dart';
 
 import '../../models/Product.dart';
 

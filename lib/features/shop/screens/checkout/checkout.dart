@@ -6,9 +6,11 @@ import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.da
 import 'package:shop_app_clothes/features/shop/controllers/AddressController.dart';
 import 'package:shop_app_clothes/features/shop/controllers/CartController.dart';
 import 'package:shop_app_clothes/features/shop/controllers/ProductController.dart';
-import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
+import 'package:shop_app_clothes/features/shop/models/Order.dart'; // Import Order model
+import 'package:shop_app_clothes/features/shop/models/OrderItem.dart'; // Import OrderItem model
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/biling_payment_section.dart'
     as payment;
+import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_amount_section.dart';
 import 'package:shop_app_clothes/features/shop/screens/service/OrderService.dart';
 import 'package:shop_app_clothes/navigation_menu.dart';
@@ -17,8 +19,6 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 
 import '../../../../common/widgets/custom_shapes/container/rounded_container.dart';
 import '../../../../common/widgets/products/cart/coupon_widget.dart';
-import 'package:shop_app_clothes/features/shop/models/Order.dart'; // Import Order model
-import 'package:shop_app_clothes/features/shop/models/OrderItem.dart'; // Import OrderItem model
 
 class TCheckOut extends StatelessWidget {
   const TCheckOut({super.key});

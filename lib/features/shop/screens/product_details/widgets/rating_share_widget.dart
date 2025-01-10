@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TRateAndShare extends StatelessWidget {
@@ -7,6 +8,13 @@ class TRateAndShare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _shareProduct() {
+      final String productLink = "http://10.0.2.2:8080/api/products";
+      final String shareText =
+          '✨ Khám phá ngay sản phẩm tuyệt vời tại cửa hàng của tôi! 🛒\n\n🔗 Xem chi tiết tại: $productLink\n\nHãy ghé qua và lựa chọn món đồ yêu thích của bạn! ❤️';
+      Share.share(shareText);
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -33,7 +41,10 @@ class TRateAndShare extends StatelessWidget {
         ),
 
         // Share Icon
-        IconButton(onPressed: () {}, icon: const Icon(Icons.share, size: 24)),
+        IconButton(
+          onPressed: _shareProduct,
+          icon: const Icon(Icons.share, size: 24),
+        ),
       ],
     );
   }

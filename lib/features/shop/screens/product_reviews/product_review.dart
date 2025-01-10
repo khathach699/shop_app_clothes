@@ -6,7 +6,12 @@ import 'package:shop_app_clothes/features/shop/screens/product_reviews/widgets/u
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TProductReview extends StatelessWidget {
-  const TProductReview({super.key});
+  final int productId; // Receive productId as a parameter
+
+  const TProductReview({
+    super.key,
+    required this.productId,
+  }); // Constructor with productId
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +33,9 @@ class TProductReview extends StatelessWidget {
               SizedBox(height: TSize.spaceBtwSections),
               const Divider(),
               SizedBox(height: TSize.spaceBtwSections),
-              TUserReviewCard(),
+              TUserReviewCard(
+                productId: productId,
+              ), // Pass productId to TUserReviewCard
             ],
           ),
         ),

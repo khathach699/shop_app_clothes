@@ -1,104 +1,199 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
-import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
-import 'package:shop_app_clothes/common/widgets/products/ratings/rating_indicator.dart';
-import 'package:shop_app_clothes/utils/constants/colors.dart';
+import 'package:shop_app_clothes/features/shop/controllers/CommentController.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TUserReviewCard extends StatelessWidget {
-  const TUserReviewCard({super.key});
+  final int productId;
+
+  const TUserReviewCard({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                const CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    "https://i.pravatar.cc/150?img=1",
-                  ),
-                ),
-                const SizedBox(width: TSize.spaceBtwItems),
-                Text("John Doe", style: Theme.of(context).textTheme.titleLarge),
-              ],
-            ),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
-          ],
-        ),
-        const SizedBox(height: TSize.spaceBtwItems),
+    final TextEditingController commentController = TextEditingController();
+    RxInt editingCommentId = RxInt(
+      0,
+    ); // To track the ID of the comment being edited
 
-        // Review
-        Row(
-          children: [
-            const TRatingBarIndicator(rating: 4),
-            const SizedBox(width: TSize.spaceBtwItems),
-            Text("01 Nov 2021", style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
-        const SizedBox(height: TSize.spaceBtwItems),
-        ReadMoreText(
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
-          "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-          "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-          "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
-          "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-          trimLines: 2,
-          trimMode: TrimMode.Line,
-          trimExpandedText: "show less",
-          trimCollapsedText: "show more",
-          moreStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: TColors.primaryColor,
-          ),
+    return GetX<CommentController>(
+      init:
+          CommentController()
+            ..initialize(productId), // Initialize the controller
+      builder: (controller) {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return Column(
+            children: [
+              // Display comments if available
+              if (controller.comment.isNotEmpty)
+                ...controller.comment.map((comment) {
+                  bool isEditing = editingCommentId.value == comment.id;
 
-          lessStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: TColors.primaryColor,
-          ),
-        ),
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(
+                                  "https://imgs.search.brave.com/3L8uuFbYeEUGCcXZzODBhDJWAYLrYQtSF5VbYwvo0x4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9ob2Fu/Z2hhbW9iaWxlLmNv/bS90aW4tdHVjL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDIzLzA3/L2FuaC1kZXAtdGhp/ZW4tbmhpZW4tdGh1/bXAuanBn", // Example avatar URL
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                comment.username,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                          PopupMenuButton<String>(
+                            onSelected: (value) {
+                              if (value == 'update') {
+                                // Edit comment
+                                editingCommentId.value = comment.id;
+                                commentController.text = comment.content ?? '';
+                              } else if (value == 'delete') {
+                                // Delete comment
+                                controller.deleteComment(comment.id);
+                              }
+                            },
+                            itemBuilder:
+                                (BuildContext context) => [
+                                  const PopupMenuItem<String>(
+                                    value: 'update',
+                                    child: Text('Update'),
+                                  ),
+                                  const PopupMenuItem<String>(
+                                    value: 'delete',
+                                    child: Text('Delete'),
+                                  ),
+                                ],
+                            icon: const Icon(Icons.more_vert),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('dd MMM yyyy').format(comment.timestamp),
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: ReadMoreText(
+                          comment.content ?? 'No content available',
+                          trimLines: 2,
+                          trimMode: TrimMode.Line,
+                          trimExpandedText: "show less",
+                          trimCollapsedText: "show more",
+                          moreStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                          lessStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
 
-        const SizedBox(height: TSize.spaceBtwItems),
+                      Divider(),
+                      const SizedBox(height: 16),
+                    ],
+                  );
+                }).toList(),
 
-        TRoundContainer(
-          backgroundColor: TColors.lightGrey,
-          child: Padding(
-            padding: EdgeInsets.all(TSize.md),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // If no comments, display a message
+              if (controller.comment.isEmpty)
+                const Center(child: Text('No comments available.')),
+
+              const SizedBox(height: TSize.spaceBtwItems),
+
+              // Always show the "Add a Comment" section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Helpful?",
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      "Add a Comment",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.thumb_up_alt_outlined),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: commentController,
+                      maxLines: 2,
+                      decoration: InputDecoration(
+                        hintText: "Write your comment...",
+                        hintStyle: TextStyle(color: Colors.grey.shade600),
+                        filled: true,
+                        fillColor: Colors.grey.shade100,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
                         ),
-                        const SizedBox(width: TSize.spaceBtwItems),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.thumb_down_alt_outlined),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 16,
                         ),
-                      ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (editingCommentId.value != 0) {
+                          // Update comment
+                          controller.updateComment(
+                            editingCommentId.value,
+                            commentController.text,
+                          );
+                          editingCommentId.value = 0; // Reset editing ID
+                        } else if (commentController.text.isNotEmpty) {
+                          // Add a new comment
+                          controller.addComment(commentController.text);
+                        }
+                        commentController.clear(); // Clear the input field
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 8,
+                        ),
+                        backgroundColor: Colors.blueAccent,
+                      ),
+                      child: Text(
+                        editingCommentId.value != 0
+                            ? "Update Comment"
+                            : "Post Comment",
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        ),
-      ],
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }
