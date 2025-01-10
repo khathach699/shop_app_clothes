@@ -1,16 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
+import 'package:shop_app_clothes/features/shop/controllers/OrderController.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TOrderListItem extends StatelessWidget {
-  const TOrderListItem({super.key});
+  final OrderController orderController = Get.put(OrderController());
+
+  TOrderListItem({super.key}) {
+    orderController.fetchOrders(); // Gọi hàm khi widget được tạo
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      itemBuilder:
-          (_, index) => TRoundContainer(
+    return Obx(() {
+      if (orderController.isLoading.value) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (orderController.orders.isEmpty) {
+        return Center(child: Text("No orders found."));
+      }
+      return ListView.separated(
+        itemBuilder: (_, index) {
+          final order = orderController.orders[index];
+          String formattedDate = DateFormat(
+            'dd/MM/yyyy',
+          ).format(DateTime.parse(order.createdAt));
+          return TRoundContainer(
             showBorder: true,
             padding: const EdgeInsets.all(TSize.md),
             child: Column(
@@ -26,18 +44,16 @@ class TOrderListItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Processing",
+                            order.status,
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
-
                           Text(
-                            "07 Nov 2024",
+                            formattedDate,
                             style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
                     ),
-
                     IconButton(
                       onPressed: () {},
                       icon: Icon(Iconsax.arrow_right_34, size: TSize.iconSm),
@@ -45,7 +61,6 @@ class TOrderListItem extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: TSize.spaceBtwItems),
-
                 Row(
                   children: [
                     Expanded(
@@ -59,12 +74,11 @@ class TOrderListItem extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Order",
+                                  "Order Id",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
-
                                 Text(
-                                  "#45789",
+                                  "#${order.orderId}",
                                   style:
                                       Theme.of(context).textTheme.headlineSmall,
                                 ),
@@ -77,7 +91,7 @@ class TOrderListItem extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          Icon(Iconsax.calendar),
+                          Icon(Iconsax.money),
                           SizedBox(width: TSize.spaceBtwItems / 2),
                           Expanded(
                             child: Column(
@@ -85,12 +99,11 @@ class TOrderListItem extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Shipping Date",
+                                  "Payment Method",
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
-
                                 Text(
-                                  "03 Feb 2025",
+                                  order.paymentMethodName,
                                   style:
                                       Theme.of(context).textTheme.headlineSmall,
                                 ),
@@ -104,9 +117,11 @@ class TOrderListItem extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-      separatorBuilder: (_, __) => SizedBox(height: TSize.spaceBtwItems),
-      itemCount: 10,
-    );
+          );
+        },
+        separatorBuilder: (_, __) => SizedBox(height: TSize.spaceBtwItems),
+        itemCount: orderController.orders.length,
+      );
+    });
   }
 }

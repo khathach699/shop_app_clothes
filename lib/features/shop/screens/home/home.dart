@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/primary_header_primary.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/search_container.dart';
 import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
@@ -77,7 +78,53 @@ class _HomeScreenState extends State<HomeScreen> {
                     future: products,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Column(
+                          children: [
+                            // Shimmer for banner
+                            Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                height: 150,
+                                width: double.infinity,
+                                margin: const EdgeInsets.only(
+                                  bottom: TSize.spaceBtwSections,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: TSize.spaceBtwSections),
+
+                            // Shimmer grid for products
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 0.7,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
+                              itemCount: 6, // Number of placeholders
+                              itemBuilder: (context, index) {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[300],
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

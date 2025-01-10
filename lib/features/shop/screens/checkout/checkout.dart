@@ -160,23 +160,7 @@ class TCheckOut extends StatelessWidget {
         padding: const EdgeInsets.all(TSize.defaultSpace),
         child: ElevatedButton(
           onPressed: _handleCheckout,
-          child: Obx(() {
-            // Check if CartController's totalPrice is null or 0
-            double total;
-            if (cartItems.isNotEmpty) {
-              total =
-                  controller.totalPrice > 0
-                      ? productController.totalPrice
-                      : controller.totalPrice;
-            } else {
-              total = productController.totalPrice;
-            }
-
-            return Text(
-              "\$${total.toStringAsFixed(2)}",
-              style: Theme.of(context).textTheme.bodyMedium,
-            );
-          }),
+          child: Text("Payment", style: Theme.of(context).textTheme.bodyLarge),
         ),
       ),
     );

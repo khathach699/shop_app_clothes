@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
 import 'package:shop_app_clothes/features/shop/models/Product.dart';
 import 'package:shop_app_clothes/features/shop/screens/service/ProductService.dart';
+import 'package:diacritic/diacritic.dart'; // Import diacritic library
 
 class AllProducts extends StatefulWidget {
   const AllProducts({super.key});
@@ -56,27 +57,6 @@ class _AllProductsState extends State<AllProducts> {
 
             return Column(
               children: [
-                // Dropdown and Search bar here
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButtonFormField(
-                    items:
-                        ['Name', 'Higher Price', 'Lower Price', 'Sale', 'New']
-                            .map(
-                              (option) => DropdownMenuItem(
-                                child: Text(option),
-                                value: option,
-                              ),
-                            )
-                            .toList(),
-                    onChanged: (value) {
-                      // Implement sorting logic based on selected value
-                    },
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.sort),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 16),
                 Expanded(
                   child: GridView.builder(
@@ -135,12 +115,13 @@ class ProductSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // Filter the products based on the query
+    // Filter the products based on the query (normalize to diacritic-free text)
     final results =
         products
             .where(
-              (product) =>
-                  product.name.toLowerCase().contains(query.toLowerCase()),
+              (product) => removeDiacritics(
+                product.name.toLowerCase(),
+              ).contains(removeDiacritics(query.toLowerCase())),
             )
             .toList();
 
@@ -163,12 +144,13 @@ class ProductSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // Show suggestions based on query as the user types
+    // Show suggestions based on query as the user types (normalize to diacritic-free text)
     final suggestions =
         products
             .where(
-              (product) =>
-                  product.name.toLowerCase().contains(query.toLowerCase()),
+              (product) => removeDiacritics(
+                product.name.toLowerCase(),
+              ).contains(removeDiacritics(query.toLowerCase())),
             )
             .toList();
 

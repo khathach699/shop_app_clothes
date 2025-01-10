@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:shop_app_clothes/features/shop/controllers/CommentController.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
@@ -23,7 +24,50 @@ class TUserReviewCard extends StatelessWidget {
             ..initialize(productId), // Initialize the controller
       builder: (controller) {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Column(
+            children: [
+              // Shimmer for banner
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  height: 150,
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: TSize.spaceBtwSections),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: TSize.spaceBtwSections),
+
+              // Shimmer grid for products
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: 6, // Number of placeholders
+                itemBuilder: (context, index) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          );
         } else {
           return Column(
             children: [
