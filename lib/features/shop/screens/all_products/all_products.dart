@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
 import 'package:shop_app_clothes/features/shop/models/Product.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/ProductService.dart';
+import 'package:shop_app_clothes/features/shop/service/ProductService.dart';
 import 'package:diacritic/diacritic.dart'; // Import diacritic library
 
 class AllProducts extends StatefulWidget {

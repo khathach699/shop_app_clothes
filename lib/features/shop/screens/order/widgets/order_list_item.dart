@@ -68,9 +68,11 @@ class TOrderListItem extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         if (order.orderItems.isNotEmpty) {
-                          final orderItem = order.orderItems.first;
+                          // Truyền cả danh sách orderItems vào màn hình chi tiết
                           Get.to(
-                            () => OrderItemDetailsScreen(orderItem: orderItem),
+                            () => OrderItemDetailsScreen(
+                              orderItems: order.orderItems,
+                            ),
                           );
                         } else {
                           print("No items in order.");

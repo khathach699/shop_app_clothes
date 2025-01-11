@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/features/shop/models/Cart.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/CartService.dart';
+import 'package:shop_app_clothes/features/shop/service/CartService.dart';
 
 class CartController extends GetxController {
   final cartItems = <CartItem>[].obs; // Observable list of cart items

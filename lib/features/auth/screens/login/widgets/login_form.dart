@@ -8,7 +8,7 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/constants/text_strings.dart';
 
 import '../../../../shop/models/User.dart';
-import '../../../../shop/screens/service/AuthService.dart';
+import '../../../../shop/service/AuthService.dart';
 
 class TLoginForm extends StatefulWidget {
   const TLoginForm({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/features/shop/models/PaymentMothod.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/PaymentMethodService%20.dart';
+import 'package:shop_app_clothes/features/shop/service/PaymentMethodService%20.dart';
 
 class SelectOptionPayment extends StatefulWidget {
   const SelectOptionPayment({super.key});

@@ -43,7 +43,7 @@ class ProductDetail extends StatelessWidget {
               child: Column(
                 children: [
                   // Rating and Share
-                  TRateAndShare(),
+                  TRateAndShare(productId: product.id),
                   // price / title
                   TProductMetaDate(product: product),
                   Divider(),

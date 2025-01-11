@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart'; // Import GetStorage
 import 'package:shop_app_clothes/features/shop/models/OrderList.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/OrderService.dart';
+import 'package:shop_app_clothes/features/shop/service/OrderService.dart';
 
 class OrderController extends GetxController {
   var orders = <OrderList>[].obs; // Observable list of Order models

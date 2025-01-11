@@ -14,7 +14,7 @@ import '../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../common/widgets/products/product_cards/product_card_vertical.dart';
 import '../../../../utils/constants/size.dart';
 import '../home/home.dart';
-import '../service/CategoryService.dart'; // Keep this import as is
+import '../../service/CategoryService.dart'; // Keep this import as is
 
 class CategoriesScreen extends StatelessWidget {
   final String categoryId;

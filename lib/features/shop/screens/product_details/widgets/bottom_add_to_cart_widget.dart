@@ -10,7 +10,7 @@ import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 import '../../../controllers/ProductController.dart';
 import '../../../models/CartRequest.dart';
 import '../../checkout/checkout.dart';
-import '../../service/CartService.dart'; // Import CartService
+import '../../../service/CartService.dart'; // Import CartService
 
 class TBottomAddToCartWidGet extends StatelessWidget {
   final int productId;
@@ -101,26 +101,13 @@ class TBottomAddToCartWidGet extends StatelessWidget {
               await cartService.addToCart(cartRequest);
 
               Get.snackbar(
-                'Added to Cart', // Title of the snackbar
-                'Your item has been successfully added to the cart.',
-                snackPosition: SnackPosition.TOP, // Position at the top
-                backgroundColor: Colors.lightGreen, // More vibrant green color
-                colorText: Colors.white, // White text color for better contrast
-                duration: Duration(
-                  seconds: 2,
-                ), // Duration for which the snackbar will appear
-                margin: EdgeInsets.only(
-                  top: 50,
-                  left: 20,
-                ), // Position the snackbar to top-left
-                padding: EdgeInsets.symmetric(horizontal: 20), // Adjust padding
-                borderRadius:
-                    10, // Optional: Adds rounded corners for a smoother look
-                snackStyle:
-                    SnackStyle
-                        .FLOATING, // Optional: Makes the snackbar floating
+                'Giỏ hàng thành công', // Tiêu đề
+                'Sản phẩm đã được thêm vào giỏ hàng.',
+                snackPosition: SnackPosition.TOP, // Vị trí thông báo
+                backgroundColor: Colors.green, // Màu nền
+                colorText: Colors.white, // Màu chữ
+                duration: Duration(seconds: 2), // Thời gian hiển thị
               );
-
               final box = GetStorage();
 
               // Read the cart items and cast them safely

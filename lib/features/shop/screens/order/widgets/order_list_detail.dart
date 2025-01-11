@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:shop_app_clothes/features/shop/models/OrderItem.dart';
+import 'package:shop_app_clothes/features/shop/models/OrderItem.dart'; // Make sure OrderItem is imported correctly.
 
 class OrderItemDetailsScreen extends StatelessWidget {
-  final OrderItem orderItem;
+  final List<OrderItem> orderItems; // Chuyển từ OrderItem sang List<OrderItem>
+
+  OrderItemDetailsScreen({required this.orderItems, super.key});
 
   // Define your color and size mappings
   final Map<int, String> colorMapping = {
@@ -12,7 +14,6 @@ class OrderItemDetailsScreen extends StatelessWidget {
     3: 'Green',
     4: 'Blue',
     5: 'Light Green',
-    // Add other color mappings here
   };
 
   final Map<int, String> sizeMapping = {
@@ -21,64 +22,59 @@ class OrderItemDetailsScreen extends StatelessWidget {
     3: 'L',
     4: 'XL',
     5: 'XXL',
-    // Add other size mappings here
   };
-
-  OrderItemDetailsScreen({required this.orderItem, super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get the color and size names based on their IDs
-    String colorName = colorMapping[orderItem.colorId] ?? 'Unknown';
-    String sizeName = sizeMapping[orderItem.sizeId] ?? 'Unknown';
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Order Item Details',
           style: TextStyle(
-            fontFamily: 'Poppins', // Using Poppins or Roboto for a modern look
+            fontFamily: 'Poppins',
             fontSize: 22,
-            fontWeight:
-                FontWeight.w600, // Slightly lighter to balance the weight
+            fontWeight: FontWeight.w600,
           ),
         ),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
       ),
       body: Container(
-        color: Colors.grey[50], // Soft light gray background
+        color: Colors.grey[50],
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ListView(
-            children: [
-              Card(
+          child: ListView.builder(
+            itemCount: orderItems.length, // Đếm số lượng sản phẩm
+            itemBuilder: (context, index) {
+              OrderItem orderItem = orderItems[index];
+
+              // Get the color and size names based on their IDs
+              String colorName = colorMapping[orderItem.colorId] ?? 'Unknown';
+              String sizeName = sizeMapping[orderItem.sizeId] ?? 'Unknown';
+
+              return Card(
                 elevation: 4,
-                shadowColor: Colors.blueGrey.withOpacity(
-                  0.15,
-                ), // Subtle shadow for depth
+                shadowColor: Colors.blueGrey.withOpacity(0.15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ), // Rounded corners for the card
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Product Image at the top
-                      Center(
-                        child: Image.network(
-                          'https://img.freepik.com/free-photo/young-handsome-man-coat-outside-street_1303-20446.jpg?ga=GA1.1.203008510.1736129615&semt=ais_hybrid',
-                          height: 250, // Adjust size of the image
-                          width: 250,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      // Product Image
+                      // Center(
+                      //   child: Image.network(
+                      //     orderItem.imageUrl ?? 'https://default-image-url.com',
+                      //     height: 250,
+                      //     width: 250,
+                      //     fit: BoxFit.cover,
+                      //   ),
+                      // ),
                       SizedBox(height: 40),
 
-                      // Product Name and Price in a Row
+                      // Product Name and Price
                       Row(
                         children: [
                           Expanded(
@@ -96,7 +92,7 @@ class OrderItemDetailsScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  orderItem.productName.toString(),
+                                  orderItem.productName ?? 'Unknown',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontStyle: FontStyle.italic,
@@ -113,7 +109,7 @@ class OrderItemDetailsScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'PricePrice',
+                                  'Price',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -139,6 +135,7 @@ class OrderItemDetailsScreen extends StatelessWidget {
                       Divider(),
                       SizedBox(height: 20),
 
+                      // Color and Size
                       Row(
                         children: [
                           Expanded(
@@ -211,12 +208,11 @@ class OrderItemDetailsScreen extends StatelessWidget {
                         ],
                       ),
 
-                      // Color and Size stacked vertically
+                      // Quantity
                       SizedBox(height: 20),
                       Divider(),
                       SizedBox(height: 20),
 
-                      // Quantity
                       Text(
                         'Quantity',
                         style: TextStyle(
@@ -233,8 +229,8 @@ class OrderItemDetailsScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

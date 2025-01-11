@@ -1,7 +1,7 @@
 import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/features/shop/models/Comment.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/CommentService.dart';
+import 'package:shop_app_clothes/features/shop/service/CommentService.dart';
 
 class CommentController extends GetxController {
   var comment = <Comment>[].obs;

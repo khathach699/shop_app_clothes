@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../models/Product.dart';
+import '../models/Product.dart';
 
 class WishListService {
   // 10.0.2.2

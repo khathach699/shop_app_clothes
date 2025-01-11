@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../models/User.dart';
+import '../models/User.dart';
 
 class AuthService {
   // 192.168.100.12:8080

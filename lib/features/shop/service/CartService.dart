@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../models/Cart.dart';
-import '../../models/CartRequest.dart';
+import '../models/Cart.dart';
+import '../models/CartRequest.dart';
 
 class CartService {
   static const String baseUrl = 'http://10.0.2.2:8080/api/cart';

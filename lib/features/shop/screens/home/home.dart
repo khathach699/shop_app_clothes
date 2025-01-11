@@ -10,7 +10,7 @@ import 'package:shop_app_clothes/features/shop/screens/all_products/all_products
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/home_categories.dart';
 import 'package:shop_app_clothes/features/shop/screens/home/widgets/promo_slider.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/ProductService.dart';
+import 'package:shop_app_clothes/features/shop/service/ProductService.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
@@ -114,6 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Shimmer.fromColors(
                                   baseColor: Colors.grey[300]!,
                                   highlightColor: Colors.grey[100]!,
+
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: Colors.grey[300],

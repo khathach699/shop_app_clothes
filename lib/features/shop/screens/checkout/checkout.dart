@@ -12,7 +12,7 @@ import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/biling_p
     as payment;
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_address_section.dart';
 import 'package:shop_app_clothes/features/shop/screens/checkout/widgets/billing_amount_section.dart';
-import 'package:shop_app_clothes/features/shop/screens/service/OrderService.dart';
+import 'package:shop_app_clothes/features/shop/service/OrderService.dart';
 import 'package:shop_app_clothes/navigation_menu.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
