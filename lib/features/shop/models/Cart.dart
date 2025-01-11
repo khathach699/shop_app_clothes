@@ -41,6 +41,8 @@ class CartItem {
     );
   }
 
+  get imageUrl => null;
+
   Map<String, dynamic> toJson() => {
     'cartId': cartId,
     'productId': productId,

@@ -43,6 +43,11 @@ class OrderList {
           return OrderItem(
             productId: cartItem.productId,
             quantity: cartItem.quantity,
+            colorId: cartItem.colorId, // Ensure cartItem has colorId
+            sizeId: cartItem.sizeId,
+            productName: cartItem.productName,
+            priceAtOrder: cartItem.priceAtOrder,
+            // Ensure cartItem has sizeId
           );
         }).toList();
 

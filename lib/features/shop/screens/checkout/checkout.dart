@@ -69,8 +69,14 @@ class TCheckOut extends StatelessWidget {
         orderItems =
             cartItems.map((cartItem) {
               return OrderItem(
-                productId: cartItem.productId,
+                productId: cartItem.productId, // Chú ý cách truy cập dữ liệu
                 quantity: cartItem.quantity,
+                colorId:
+                    productController.colorMapping[cartItem.colorName] ??
+                    0, // Quy đổi colorName thành colorId
+                sizeId:
+                    productController.sizeMapping[cartItem.sizeName] ??
+                    0, // Quy đổi sizeName thành sizeId
               );
             }).toList();
       } else if (arguments.containsKey('productId')) {
@@ -79,6 +85,10 @@ class TCheckOut extends StatelessWidget {
           OrderItem(
             productId: arguments['productId'],
             quantity: arguments['quantity'],
+            colorId:
+                arguments["selectedColorId"], // Quy đổi colorName thành colorId
+            sizeId: arguments["selectedSizeId"],
+            // Quy đổi sizeName thành sizeId
           ),
         );
       }

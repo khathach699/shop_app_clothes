@@ -4,13 +4,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
 import 'package:shop_app_clothes/features/shop/controllers/OrderController.dart';
+import 'package:shop_app_clothes/features/shop/screens/order/widgets/order_list_detail.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TOrderListItem extends StatelessWidget {
   final OrderController orderController = Get.put(OrderController());
 
   TOrderListItem({super.key}) {
-    orderController.fetchOrders(); // Gọi hàm khi widget được tạo
+    orderController.fetchOrders(); // Fetch orders when widget is created
   }
 
   @override
@@ -34,43 +35,69 @@ class TOrderListItem extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // First Row: Order Status & Date
                 Row(
                   children: [
-                    Icon(Iconsax.ship),
+                    Icon(Iconsax.ship, size: 28, color: Colors.blue),
                     SizedBox(width: TSize.spaceBtwItems / 2),
                     Expanded(
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             order.status,
-                            style: Theme.of(context).textTheme.bodyLarge,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
                           ),
                           Text(
                             formattedDate,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.headlineSmall!.copyWith(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey[600],
+                            ),
                           ),
                         ],
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(Iconsax.arrow_right_34, size: TSize.iconSm),
+                      onPressed: () {
+                        if (order.orderItems.isNotEmpty) {
+                          final orderItem = order.orderItems.first;
+                          Get.to(
+                            () => OrderItemDetailsScreen(orderItem: orderItem),
+                          );
+                        } else {
+                          print("No items in order.");
+                        }
+                      },
+                      icon: Icon(
+                        Icons.arrow_forward,
+                        size: 24,
+                        color: Colors.blueAccent,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: TSize.spaceBtwItems),
+
+                const SizedBox(height: TSize.spaceBtwItems),
+
+                // Second Row: Order ID and Payment Method
                 Row(
                   children: [
                     Expanded(
                       child: Row(
                         children: [
-                          Icon(Iconsax.tag),
+                          Icon(Iconsax.tag, size: 22, color: Colors.green),
                           SizedBox(width: TSize.spaceBtwItems / 2),
                           Expanded(
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
@@ -79,8 +106,12 @@ class TOrderListItem extends StatelessWidget {
                                 ),
                                 Text(
                                   "#${order.orderId}",
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ],
                             ),
@@ -88,14 +119,14 @@ class TOrderListItem extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(width: TSize.spaceBtwItems),
                     Expanded(
                       child: Row(
                         children: [
-                          Icon(Iconsax.money),
+                          Icon(Iconsax.money, size: 22, color: Colors.orange),
                           SizedBox(width: TSize.spaceBtwItems / 2),
                           Expanded(
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
@@ -104,8 +135,12 @@ class TOrderListItem extends StatelessWidget {
                                 ),
                                 Text(
                                   order.paymentMethodName,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ],
                             ),
