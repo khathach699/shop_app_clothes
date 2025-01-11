@@ -30,7 +30,7 @@ class BrandCard extends StatelessWidget {
           children: [
             Flexible(
               child: TCircularImage(
-                isNetworkImage: false,
+                isNetworkImage: true,
                 image: image,
                 backgroundColor: Colors.transparent,
               ),

@@ -7,16 +7,31 @@ import 'package:shop_app_clothes/common/widgets/custom_shapes/container/search_c
 import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
 import 'package:shop_app_clothes/common/widgets/products/cart/cart_menu_icon.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
+import 'package:shop_app_clothes/features/shop/models/Category.dart';
 import 'package:shop_app_clothes/features/shop/screens/all_products/all_products.dart';
+import 'package:shop_app_clothes/features/shop/screens/store/widgets/Category_tab2.dart';
 import 'package:shop_app_clothes/features/shop/screens/store/widgets/category_tab.dart';
+import 'package:shop_app_clothes/features/shop/screens/store/widgets/category_tab3.dart';
+import 'package:shop_app_clothes/features/shop/service/CategoryService.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
-class StoreScreen extends StatelessWidget {
-
+class StoreScreen extends StatefulWidget {
   const StoreScreen({super.key});
+
+  @override
+  State<StoreScreen> createState() => _StoreScreenState();
+}
+
+class _StoreScreenState extends State<StoreScreen> {
+  late Future<List<CategoryResponse>> _categoriesFuture;
+  @override
+  void initState() {
+    super.initState();
+    _categoriesFuture = CategoryService.getCategoriesWithProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +80,50 @@ class StoreScreen extends StatelessWidget {
                       const SizedBox(height: TSize.spaceBtwItems / 1.5),
 
                       TGridLayout(
-                        itemCount: 4,
+                        itemCount: 4, // Display only the first 4 categories
                         mainAxisExtent: 80,
-                        itemBuilder: (_, index) {
-                          return BrandCard(
-                            title: "Nike",
-                            image: TImages.shoe2,
-                            productCount: 4,
-                            onTap: () {},
+                        itemBuilder: (context, index) {
+                          return FutureBuilder<List<CategoryResponse>>(
+                            future: _categoriesFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('Error: ${snapshot.error}'),
+                                );
+                              } else if (snapshot.hasData) {
+                                final categories = snapshot.data!;
+
+                                // Ensure there are at least 4 categories
+                                if (index < categories.length) {
+                                  final category = categories[index];
+
+                                  return BrandCard(
+                                    title: category.name, // Use category name
+                                    image: category.image, // Use category image
+                                    productCount:
+                                        category
+                                            .products
+                                            .length, // Count of products in the category
+                                    onTap: () {
+                                      // Handle navigation or actions on tap
+                                      print("Tapped on ${category.name}");
+                                    },
+                                  );
+                                } else {
+                                  // Return a placeholder if there are less than 4 categories
+                                  return const SizedBox();
+                                }
+                              } else {
+                                return const Center(
+                                  child: Text('No categories found'),
+                                );
+                              }
+                            },
                           );
                         },
                       ),
@@ -82,11 +133,10 @@ class StoreScreen extends StatelessWidget {
 
                 bottom: TTabBar(
                   tabs: [
-                    Tab(child: Text("Sport")),
-                    Tab(child: Text("Furniture")),
-                    Tab(child: Text("Electronics")),
-                    Tab(child: Text("Clothes")),
-                    Tab(child: Text("Cosmetics")),
+                    Tab(child: Text("Highest price")),
+                    Tab(child: Text("Lowest price")),
+                    Tab(child: Text("Most purchased")),
+                    Tab(child: Text("highest rated")),
                   ],
                 ),
               ),
@@ -95,9 +145,8 @@ class StoreScreen extends StatelessWidget {
           body: TabBarView(
             children: [
               CategoryTab(),
-              CategoryTab(),
-              CategoryTab(),
-              CategoryTab(),
+              CategoryTab2(),
+              CategoryTab3(),
               CategoryTab(),
             ],
           ),

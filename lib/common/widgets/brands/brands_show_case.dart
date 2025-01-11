@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
 import 'package:shop_app_clothes/common/widgets/brands/brand_card.dart';
+import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
@@ -22,7 +21,8 @@ class TBrandShowcase extends StatelessWidget {
         children: [
           const BrandCard(
             title: "title",
-            image: TImages.shoe1,
+            image:
+                "https://cdn-icons-png.freepik.com/256/10274/10274606.png?ga=GA1.1.203008510.1736129615&semt=ais_hybrid",
             productCount: 3,
           ),
 
@@ -51,7 +51,7 @@ Widget brandTopProductImageWidget(String image, context) {
               : TColors.white,
       margin: const EdgeInsets.only(right: TSize.sm),
       padding: EdgeInsets.all(TSize.md),
-      child: Image(image: AssetImage(image), fit: BoxFit.contain),
+      child: Image(image: NetworkImage(image), fit: BoxFit.contain),
     ),
   );
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/route_manager.dart';
 import 'package:shop_app_clothes/features/shop/models/Rating.dart';
 import 'package:shop_app_clothes/features/shop/service/RatingService.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
@@ -31,9 +33,14 @@ class _TRatingBarIndicatorState extends State<TRatingBarIndicator> {
 
     try {
       await ratingService.addRating(newRating);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Rating added successfully!')));
+      Get.snackbar(
+        'Đánh giá thành công',
+        'Cảm ơn bạn đã đánh giá sản phẩm của chúng tôi.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.lightGreen,
+        colorText: Colors.white,
+        duration: Duration(seconds: 2),
+      );
       widget.onRatingSubmitted(); // Call the callback to refresh data
     } catch (e) {
       ScaffoldMessenger.of(
@@ -72,8 +79,13 @@ class _TRatingBarIndicatorState extends State<TRatingBarIndicator> {
             if (_rating > 0) {
               _submitRating(_rating);
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Please select a rating.')),
+              Get.snackbar(
+                'Đánh giá thất bại',
+                'Vui lòng thử lại.',
+                snackPosition: SnackPosition.TOP,
+                backgroundColor: Colors.lightBlue,
+                colorText: Colors.white,
+                duration: Duration(seconds: 2),
               );
             }
           },

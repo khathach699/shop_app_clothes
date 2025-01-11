@@ -9,21 +9,21 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/features/shop/models/Product.dart'; // Assuming you have a Product model
 // Assuming you have a service to fetch products
 
-class CategoryTab extends StatefulWidget {
-  const CategoryTab({super.key});
+class CategoryTab3 extends StatefulWidget {
+  const CategoryTab3({super.key});
 
   @override
-  _CategoryTabState createState() => _CategoryTabState();
+  _CategoryTab3State createState() => _CategoryTab3State();
 }
 
-class _CategoryTabState extends State<CategoryTab> {
+class _CategoryTab3State extends State<CategoryTab3> {
   late Future<List<Product>> _products;
 
   @override
   void initState() {
     super.initState();
     // Fetch products sorted by price descending initially
-    _products = ProductService.getProductsSortedByPriceDesc();
+    _products = ProductService.getMostPurchasedProducts();
   }
 
   @override
