@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/state_manager.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/features/shop/models/Comment.dart';
@@ -50,8 +52,23 @@ class CommentController extends GetxController {
         newComment,
       );
       comment.add(addedComment);
+      Get.snackbar(
+        'Comment thành công', // Tiêu đề
+        'Cảm ơn bạn đã comment sản phẩm của chúng tôi.',
+        snackPosition: SnackPosition.TOP, // Vị trí thông báo
+        backgroundColor: Colors.green, // Màu nền
+        colorText: Colors.white, // Màu chữ
+        duration: Duration(seconds: 2), // Thời gian hiển thị
+      );
     } catch (e) {
-      errorMessage.value = 'Failed to add comment';
+      Get.snackbar(
+        'Comment thất bại', // Tiêu đề
+        'Vui lòng kiểm tra lại.',
+        snackPosition: SnackPosition.TOP, // Vị trí thông báo
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // Màu chữ
+        duration: Duration(seconds: 2), // Thời gian hiển thị
+      );
     }
   }
 
@@ -68,6 +85,14 @@ class CommentController extends GetxController {
       final index = comment.indexWhere((c) => c.id == commentId);
       if (index != -1) {
         comment[index] = updatedComment;
+        Get.snackbar(
+          'Comment thành công', // Tiêu đề
+          'Cảm ơn bạn đã comment sản phẩm của chúng tôi.',
+          snackPosition: SnackPosition.TOP, // Vị trí thông báo
+          backgroundColor: Colors.green, // Màu nền
+          colorText: Colors.white, // Màu chữ
+          duration: Duration(seconds: 2), // Thời gian hiển thị
+        );
       }
     } catch (e) {
       errorMessage.value = 'Failed to update comment';
@@ -81,6 +106,14 @@ class CommentController extends GetxController {
     try {
       await CommentService().deleteComment(commentId, userId);
       comment.removeWhere((c) => c.id == commentId);
+      Get.snackbar(
+        'Comment xóa thành công', // Tiêu đề
+        '',
+        snackPosition: SnackPosition.TOP, // Vị trí thông báo
+        backgroundColor: Colors.lightBlue, // Màu nền
+        colorText: Colors.white, // Màu chữ
+        duration: Duration(seconds: 2), // Thời gian hiển thị
+      );
     } catch (e) {
       errorMessage.value = 'Failed to delete comment';
     }

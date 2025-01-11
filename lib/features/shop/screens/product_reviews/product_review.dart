@@ -6,13 +6,36 @@ import 'package:shop_app_clothes/features/shop/screens/product_reviews/widgets/u
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/features/shop/service/RatingService.dart';
 
-class TProductReview extends StatelessWidget {
-  final int productId; // Receive productId as a parameter
+class TProductReview extends StatefulWidget {
+  final int productId;
 
-  const TProductReview({
-    super.key,
-    required this.productId,
-  }); // Constructor with productId
+  const TProductReview({Key? key, required this.productId}) : super(key: key);
+
+  @override
+  _TProductReviewState createState() => _TProductReviewState();
+}
+
+class _TProductReviewState extends State<TProductReview> {
+  int _totalRatings = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTotalRatings(); // Fetch initial data
+  }
+
+  Future<void> _loadTotalRatings() async {
+    try {
+      final totalRatings = await RatingService().getTotalRatings(
+        widget.productId,
+      );
+      setState(() {
+        _totalRatings = totalRatings;
+      });
+    } catch (e) {
+      print('Error loading ratings: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,59 +50,33 @@ class TProductReview extends StatelessWidget {
               Text("Reviews & Ratings"),
               SizedBox(height: TSize.spaceBtwSections),
 
-              TOverallProductRating(productId: productId),
+              TOverallProductRating(productId: widget.productId),
+              SizedBox(height: TSize.spaceBtwItems / 2),
 
-              TRatingBarIndicator(productId: productId),
-
-              // FutureBuilder to get total ratings count
-              FutureBuilder<int>(
-                future: _getTotalRatings(), // Call the API to get total ratings
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator(); // Show loading indicator
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    return Text(
-                      snapshot.data?.toString() ??
-                          "0", // Display total ratings count
-                      style: Theme.of(context).textTheme.bodySmall,
-                    );
-                  } else {
-                    return const Text('No data available');
-                  }
-                },
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TRatingBarIndicator(
+                    productId: widget.productId,
+                    onRatingSubmitted:
+                        _loadTotalRatings, // Refresh data after submission
+                  ),
+                  SizedBox(width: TSize.spaceBtwItems / 2),
+                  Text(
+                    "Số đánh giá: $_totalRatings",
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ],
               ),
+
               SizedBox(height: TSize.spaceBtwSections),
               const Divider(),
               SizedBox(height: TSize.spaceBtwSections),
-              TUserReviewCard(
-                productId: productId,
-              ), // Pass productId to TUserReviewCard
+              TUserReviewCard(productId: widget.productId),
             ],
           ),
         ),
       ),
     );
-  }
-
-  // Fetch total number of ratings for the product
-  // Fetch total number of ratings for the product
-  // Fetch total number of ratings for the product
-  Future<int> _getTotalRatings() async {
-    RatingService ratingService = RatingService();
-
-    try {
-      // Get total ratings count from API
-      int totalRatings = await ratingService.getTotalRatings(
-        productId,
-      ); // Use getTotalRatings instead of getAverageRating
-      return totalRatings; // Return the total ratings count
-    } catch (e) {
-      // Handle error
-      print('Error fetching total ratings: $e');
-      // Return a default value of 0 if there's an error
-      return 0;
-    }
   }
 }

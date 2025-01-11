@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shop_app_clothes/features/shop/models/Rating.dart';
 import 'package:shop_app_clothes/features/shop/service/RatingService.dart';
+import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TRatingBarIndicator extends StatefulWidget {
-  const TRatingBarIndicator({super.key, required this.productId});
+  const TRatingBarIndicator({
+    Key? key,
+    required this.productId,
+    required this.onRatingSubmitted,
+  }) : super(key: key);
+
   final int productId;
+  final VoidCallback onRatingSubmitted; // Callback function
 
   @override
   _TRatingBarIndicatorState createState() => _TRatingBarIndicatorState();
@@ -14,23 +21,21 @@ class TRatingBarIndicator extends StatefulWidget {
 class _TRatingBarIndicatorState extends State<TRatingBarIndicator> {
   double _rating = 0;
 
-  // Function to add rating
   Future<void> _submitRating(double rating) async {
     RatingService ratingService = RatingService();
     Rating newRating = Rating(
-      userId: 1, // You can replace it with the actual user ID
+      userId: 1, // Replace with actual user ID
       productId: widget.productId,
       score: rating.toInt(),
     );
 
     try {
-      // Call the addRating method to save the rating
       await ratingService.addRating(newRating);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Rating added successfully!')));
+      widget.onRatingSubmitted(); // Call the callback to refresh data
     } catch (e) {
-      // Handle any errors
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to add rating: $e')));
@@ -41,7 +46,6 @@ class _TRatingBarIndicatorState extends State<TRatingBarIndicator> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Display the RatingBar for the user to choose a rating
         RatingBar.builder(
           initialRating: _rating,
           minRating: 1,
@@ -56,32 +60,24 @@ class _TRatingBarIndicatorState extends State<TRatingBarIndicator> {
             });
           },
         ),
-        // Button to submit the rating
+        SizedBox(width: TSize.spaceBtwItems / 2),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ), // Smaller padding
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                6,
-              ), // Slightly smaller corner radius
+              borderRadius: BorderRadius.circular(6),
             ),
           ),
           onPressed: () {
             if (_rating > 0) {
-              _submitRating(_rating); // Call the function to submit the rating
+              _submitRating(_rating);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Please select a rating.')),
               );
             }
           },
-          child: Text(
-            'Submit Rating',
-            style: TextStyle(fontSize: 14), // Smaller text size
-          ),
+          child: Text('Submit Rating', style: TextStyle(fontSize: 14)),
         ),
       ],
     );
