@@ -7,9 +7,8 @@ class TText {
   static const String onBoardingSubtitle2 = "Subtitle";
   static const String onBoardingSubtitle3 = "Subtitle";
 
-  static const String loginTitle = "Welcome to Stone King";
-  static const String loginSubtitle =
-      "Your gateway to a seamless shopping experience.";
+  static const String loginTitle = "chào buổi sáng";
+  static const String loginSubtitle = "chúc bạn trải nghiệm tốt nhất";
 
   //authe form
   static const String email = "E-Mail";
@@ -22,10 +21,10 @@ class TText {
 
   // home
 
-  static const String homeAppbarTitle = "Good day for shopping";
-  static const String homeAppbarSubTitle = "Stone King";
+  static const String homeAppbarTitle = "chào buổi sáng";
+  static const String homeAppbarSubTitle = "app bán hàng ";
 
   // success oder
 
-  static const String tContinus = "Continue Order";
+  static const String tContinus = "tiếp tục orderorder";
 }

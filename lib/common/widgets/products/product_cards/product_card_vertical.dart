@@ -1,7 +1,7 @@
 // lib/common/widgets/products/product_cards/product_card_vertical.dart
 import 'package:flutter/material.dart';
-import 'package:shop_app_clothes/features/shop/models/Product.dart';
-import 'package:shop_app_clothes/features/shop/screens/product_details/product_detail.dart';
+import 'package:shop_app_clothes/pages/models/Product.dart';
+import 'package:shop_app_clothes/pages/shop/product_details/product_detail.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TProductCardVertical extends StatelessWidget {

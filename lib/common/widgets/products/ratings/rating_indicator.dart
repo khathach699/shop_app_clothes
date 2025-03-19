@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/route_manager.dart';
-import 'package:shop_app_clothes/features/shop/models/Rating.dart';
-import 'package:shop_app_clothes/features/shop/service/RatingService.dart';
+import 'package:shop_app_clothes/pages/models/Rating.dart';
+import 'package:shop_app_clothes/pages/service/RatingService.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TRatingBarIndicator extends StatefulWidget {

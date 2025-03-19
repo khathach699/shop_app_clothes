@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:shop_app_clothes/features/personalization/screens/settings/setting.dart';
-import 'package:shop_app_clothes/features/shop/screens/home/home.dart';
-import 'package:shop_app_clothes/features/shop/screens/store/store.dart';
-import 'package:shop_app_clothes/features/shop/screens/wishlist/wishlist.dart';
+import 'package:shop_app_clothes/pages/settings/setting.dart';
+import 'package:shop_app_clothes/pages/shop/home/home.dart';
+import 'package:shop_app_clothes/pages/shop/store/store.dart';
+import 'package:shop_app_clothes/pages/shop/wishlist/wishlist.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 class NavigationMenu extends StatelessWidget {
