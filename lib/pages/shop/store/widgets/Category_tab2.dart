@@ -22,7 +22,8 @@ class _CategoryTab2State extends State<CategoryTab2> {
   void initState() {
     super.initState();
     // Fetch products sorted by price descending initially
-    _products = ProductService.getProductsSortedByPriceAsc();
+    final productService = ProductService();
+    _products = productService.getProductsSortedByPriceAsc();
   }
 
   @override

@@ -1,90 +1,105 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:shop_app_clothes/pages/models/Product.dart';
-import 'dart:io';
 
 class ProductService {
-  static const String _baseURL =
-      'http://10.0.2.2:8080/api/products'; // Use the correct server URL for your setup
-  static Future<List<Product>> getAllProducts() async {
+  static const String _baseURL = 'http://10.0.2.2:8080/api/products';
+
+  // Khởi tạo Dio với cấu hình cơ bản
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: _baseURL,
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 3),
+    ),
+  );
+
+  // Lấy tất cả sản phẩm
+  Future<List<Product>> getAllProducts() async {
     try {
-      final url = '$_baseURL/getAlls';
-      final response = await http.get(Uri.parse(url));
+      final response = await _dio.get('/getAlls');
+
       if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
+        List<dynamic> jsonData = response.data;
         return jsonData.map((data) => Product.fromJson(data)).toList();
       } else {
-        throw Exception('Failed to load products');
+        throw Exception('Failed to load products: ${response.statusCode}');
       }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
-    } catch (e) {
-      // Catch any other unexpected errors
-
-      throw Exception('An unexpected error occurred: $e');
-    }
-  }
-
-  static Future<List<Product>> getProductsSortedByPriceDesc() async {
-    try {
-      final url =
-          '$_baseURL/sortedByPrice'; // Call the endpoint for descending price
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
-        return jsonData.map((data) => Product.fromJson(data)).toList();
-      } else {
-        throw Exception('Failed to load products');
-      }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
     }
   }
 
-  // Get products sorted by price in ascending order
-  static Future<List<Product>> getProductsSortedByPriceAsc() async {
+  // Lấy sản phẩm sắp xếp theo giá giảm dần
+  Future<List<Product>> getProductsSortedByPriceDesc() async {
     try {
-      final url =
-          '$_baseURL/sortedByPriceAsc'; // Call the endpoint for ascending price
-      final response = await http.get(Uri.parse(url));
+      final response = await _dio.get('/sortedByPrice');
+
       if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
+        List<dynamic> jsonData = response.data;
         return jsonData.map((data) => Product.fromJson(data)).toList();
       } else {
-        throw Exception('Failed to load products');
+        throw Exception('Failed to load products: ${response.statusCode}');
       }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
     }
   }
 
-  static Future<List<Product>> getMostPurchasedProducts() async {
+  // Lấy sản phẩm sắp xếp theo giá tăng dần
+  Future<List<Product>> getProductsSortedByPriceAsc() async {
     try {
-      final url =
-          '$_baseURL/most-purchased'; // Call the endpoint for ascending price
-      final response = await http.get(Uri.parse(url));
+      final response = await _dio.get('/sortedByPriceAsc');
+
       if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
+        List<dynamic> jsonData = response.data;
         return jsonData.map((data) => Product.fromJson(data)).toList();
       } else {
-        throw Exception('Failed to load products');
+        throw Exception('Failed to load products: ${response.statusCode}');
       }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
     } catch (e) {
       throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  // Lấy sản phẩm được mua nhiều nhất
+  Future<List<Product>> getMostPurchasedProducts() async {
+    try {
+      final response = await _dio.get('/most-purchased');
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = response.data;
+        return jsonData.map((data) => Product.fromJson(data)).toList();
+      } else {
+        throw Exception('Failed to load products: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
+    } catch (e) {
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  // Hàm xử lý lỗi Dio
+  String _handleDioError(DioException error) {
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+        return 'Connection timeout. Please check your network.';
+      case DioExceptionType.sendTimeout:
+        return 'Send timeout. Unable to send request.';
+      case DioExceptionType.receiveTimeout:
+        return 'Receive timeout. Server took too long to respond.';
+      case DioExceptionType.badResponse:
+        return 'Server error: ${error.response?.statusCode} - ${error.response?.data}';
+      case DioExceptionType.cancel:
+        return 'Request was cancelled.';
+      default:
+        return 'Network error: ${error.message}';
     }
   }
 }

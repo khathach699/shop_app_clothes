@@ -17,7 +17,7 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen> {
   List<Product> wishlist = [];
   bool isLoading = true;
-
+  final wishListService = WishListService();
   @override
   void initState() {
     super.initState();
@@ -26,10 +26,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   Future<void> fetchWishlist() async {
     final box = GetStorage();
-    int? userId = box.read('userId'); // Lấy userId từ GetStorage
+    int? userId = box.read('userId');
+    print("this is: $userId");
     if (userId != null) {
       try {
-        List<Product> fetchedWishlist = await WishListService.getWishlist(
+        List<Product> fetchedWishlist = await wishListService.getWishlist(
           userId,
         );
         setState(() {

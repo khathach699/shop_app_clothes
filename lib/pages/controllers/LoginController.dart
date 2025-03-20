@@ -1,10 +1,9 @@
 // login_controller.dart
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/pages/service/AuthService.dart';
-import 'package:shop_app_clothes/navigation_menu.dart';
 
 class LoginController extends GetxController {
   // Controllers

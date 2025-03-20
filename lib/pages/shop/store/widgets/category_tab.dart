@@ -3,10 +3,9 @@ import 'package:shop_app_clothes/common/widgets/brands/brands_show_case.dart';
 import 'package:shop_app_clothes/common/widgets/layouts/grid_layout.dart';
 import 'package:shop_app_clothes/common/widgets/products/product_cards/product_card_vertical.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
-import 'package:shop_app_clothes/pages/service/ProductService.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
-import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/pages/models/Product.dart'; // Assuming you have a Product model
+import 'package:shop_app_clothes/pages/service/ProductService.dart';
+import 'package:shop_app_clothes/utils/constants/size.dart';
 // Assuming you have a service to fetch products
 
 class CategoryTab extends StatefulWidget {
@@ -23,7 +22,7 @@ class _CategoryTabState extends State<CategoryTab> {
   void initState() {
     super.initState();
     // Fetch products sorted by price descending initially
-    _products = ProductService.getProductsSortedByPriceDesc();
+    _products = ProductService().getProductsSortedByPriceDesc();
   }
 
   @override

@@ -20,7 +20,8 @@ class _AllProductsState extends State<AllProducts> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    products = ProductService.getAllProducts(); // Fetch products on init
+    final productService = ProductService();
+    products = productService.getAllProducts(); // Fetch products on init
   }
 
   @override

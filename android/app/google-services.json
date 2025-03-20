@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1089338576921",
+    "project_id": "shop-clothes-b03f0",
+    "storage_bucket": "shop-clothes-b03f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1089338576921:android:6ec72a786f22cc1c5fda88",
+        "android_client_info": {
+          "package_name": "com.example.shop_app_clothes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCCx5Azo8G33ugZy-9pAq18iLD-c57J6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

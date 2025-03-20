@@ -23,7 +23,7 @@ class _CategoryTab3State extends State<CategoryTab3> {
   void initState() {
     super.initState();
     // Fetch products sorted by price descending initially
-    _products = ProductService.getMostPurchasedProducts();
+    _products = ProductService().getMostPurchasedProducts();
   }
 
   @override

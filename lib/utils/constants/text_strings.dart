@@ -12,6 +12,7 @@ class TText {
 
   //authe form
   static const String email = "E-Mail";
+  static const String userName = "User Name";
   static const String password = "Password";
   static const String rememberMe = "Remember Me";
   static const String forgotPassword = "Forgot Password";

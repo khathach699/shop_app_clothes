@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_roundted_image.dart';
-import 'package:shop_app_clothes/common/widgets/texts/branch_title_with_verified_icon.dart';
 import 'package:shop_app_clothes/common/widgets/texts/product_title_text.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 

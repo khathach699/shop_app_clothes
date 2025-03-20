@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/common/widgets/products/cart/cart_item.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
-import '../../../models/Cart.dart'; // Assuming you have a CartItem model
+import '../../../models/Cart.dart';
 
 class TCartItems extends StatelessWidget {
-  final List<CartItem>
-  cartItems; // Dữ liệu giỏ hàng, defined with CartItem type
+  final List<CartItem> cartItems;
   final bool showAddRemoveButtons;
-  final Function(int) onRemoveItem; // Callback for item removal
+  final Function(int) onRemoveItem;
 
   const TCartItems({
     super.key,

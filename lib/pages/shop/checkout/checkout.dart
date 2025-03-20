@@ -6,9 +6,8 @@ import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.da
 import 'package:shop_app_clothes/pages/controllers/AddressController.dart';
 import 'package:shop_app_clothes/pages/controllers/CartController.dart';
 import 'package:shop_app_clothes/pages/controllers/ProductController.dart';
-
-import 'package:shop_app_clothes/pages/models/Order.dart'; // Import Order model
-import 'package:shop_app_clothes/pages/models/OrderItem.dart'; // Import OrderItem model
+import 'package:shop_app_clothes/pages/models/Order.dart';
+import 'package:shop_app_clothes/pages/models/OrderItem.dart';
 import 'package:shop_app_clothes/pages/shop/checkout/widgets/biling_payment_section.dart'
     as payment;
 import 'package:shop_app_clothes/pages/shop/checkout/widgets/billing_address_section.dart';
@@ -31,33 +30,23 @@ class TCheckOut extends StatelessWidget {
     final box = GetStorage();
     int userId = box.read('userId') ?? 0;
 
-    // Eagerly initialize CartController
     final CartController controller = Get.put(CartController());
     final ProductController productController = Get.put(ProductController());
 
-    // Lấy cartItems được truyền từ CartScreen
     final Map<String, dynamic> arguments = Get.arguments ?? {};
 
-    // Kiểm tra nếu có giỏ hàng (List)
     List<dynamic> cartItems = [];
     if (arguments['cartItems'] is List) {
       cartItems = arguments['cartItems'];
     }
 
-    // Kiểm tra nếu có đơn hàng (Map)
     Map<String, dynamic> order = {};
     if (arguments['order'] is Map) {
       order = arguments['order'];
     }
 
-    // Bây giờ bạn có thể xử lý `cartItems` hoặc `order` tùy thuộc vào dữ liệu nhận được.
-
-    print("${cartItems}");
-
-    // Mã phương thức thanh toán mặc định
     int selectedPaymentMethodId = 1;
 
-    // Cập nhật mã phương thức thanh toán
     void updatePaymentMethodId(int selectedId) {
       selectedPaymentMethodId = selectedId;
     }

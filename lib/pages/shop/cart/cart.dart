@@ -6,10 +6,9 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 import '../../../common/widgets/products/cart/cart_item.dart';
 
 class CartScreen extends StatelessWidget {
-  final CartController controller = Get.put(CartController());
-
   @override
   Widget build(BuildContext context) {
+    final CartController controller = Get.put(CartController());
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart", style: Theme.of(context).textTheme.headlineSmall),
@@ -41,7 +40,6 @@ class CartScreen extends StatelessWidget {
           ),
         );
       }),
-      // Trong CartScreen
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(TSize.defaultSpace),
         child: Obx(
@@ -50,14 +48,9 @@ class CartScreen extends StatelessWidget {
                 controller.cartItems.isEmpty
                     ? null
                     : () {
-                      print("${controller.cartItems}");
-                      // Chuyển đến trang thanh toán và truyền danh sách sản phẩm
                       Get.to(
                         () => TCheckOut(),
-                        arguments: {
-                          'cartItems':
-                              controller.cartItems, // Truyền danh sách sản phẩm
-                        },
+                        arguments: {'cartItems': controller.cartItems},
                       );
                     },
             child: Text(

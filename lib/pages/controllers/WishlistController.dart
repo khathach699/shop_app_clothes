@@ -5,11 +5,12 @@ import '../service/WishlistService.dart';
 
 class WishlistController extends GetxController {
   var isInWishlist = false.obs;
+  final wishListService = WishListService();
 
   // Hàm kiểm tra sản phẩm có trong wishlist không
   Future<void> checkIfInWishlist(int userId, int productId) async {
     try {
-      bool exists = await WishListService.isProductInWishlist(
+      bool exists = await wishListService.isProductInWishlist(
         userId,
         productId,
       );
@@ -24,7 +25,7 @@ class WishlistController extends GetxController {
     try {
       if (isInWishlist.value) {
         // If the product is in the wishlist, remove it
-        await WishListService.removeProductFromWishlist(userId, productId);
+        await wishListService.removeProductFromWishlist(userId, productId);
         Get.snackbar(
           'wishlist xóa thành công', // Tiêu đề
           'Sản phẩm đã được xóa khỏi wishlist.',
@@ -35,7 +36,7 @@ class WishlistController extends GetxController {
         );
       } else {
         // If the product is not in the wishlist, add it
-        await WishListService.addProductToWishlist(userId, productId);
+        await wishListService.addProductToWishlist(userId, productId);
         Get.snackbar(
           'wishlist thành công', // Tiêu đề
           'Sản phẩm đã được thêm vào wishlist.',

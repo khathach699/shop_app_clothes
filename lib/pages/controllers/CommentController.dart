@@ -38,6 +38,7 @@ class CommentController extends GetxController {
   Future<void> addComment(String content) async {
     final box = GetStorage();
     int userId = box.read('userId') ?? 0;
+
     final newComment = Comment(
       username: "khathach",
       timestamp: DateTime.now(),
@@ -45,6 +46,7 @@ class CommentController extends GetxController {
       id: 0,
       productId: productId,
       userId: userId,
+
     );
 
     try {

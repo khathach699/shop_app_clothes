@@ -1,8 +1,8 @@
 // auth_service.dart
 import 'package:dio/dio.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../models/User.dart';
-
 
 class AuthService {
   final Dio _dio = Dio(
@@ -13,6 +13,7 @@ class AuthService {
     ),
   );
 
+  final GetStorage _storage = GetStorage();
   Future<User> login(String email, String password) async {
     try {
       final response = await _dio.post(
@@ -22,7 +23,10 @@ class AuthService {
 
       if (response.data["code"] == 1000 &&
           response.data["result"]["authenticated"] == true) {
-        return User.fromJson(response.data["result"]);
+        User user = User.fromJson(response.data["result"]);
+        await _storage.write("userId", user.id);
+        print("User ID saved: ${user.id}");
+        return user;
       }
       throw Exception("Invalid email or password");
     } on DioException catch (e) {
