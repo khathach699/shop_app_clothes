@@ -1,9 +1,8 @@
-// auth_service.dart
 import 'package:dio/dio.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../utils/helpers/token_helper.dart';
 import '../models/User.dart';
-
-
+import 'StorageService.dart';
 class AuthService {
   final Dio _dio = Dio(
     BaseOptions(
@@ -16,12 +15,21 @@ class AuthService {
   Future<User> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        '/log-in',
+        '/token',
         data: {'email': email, 'password': password},
       );
 
       if (response.data["code"] == 1000 &&
           response.data["result"]["authenticated"] == true) {
+        String token = response.data["result"]["token"];
+
+        await StorageService.saveToken(token); // Lưu token vào SharedPreferences
+
+        int? userId = TokenHelper.getUserIdFromToken(token);
+        if (userId != null) {
+          await StorageService.saveUserId(userId); // Lưu userId
+        }
+
         return User.fromJson(response.data["result"]);
       }
       throw Exception("Invalid email or password");
@@ -32,15 +40,26 @@ class AuthService {
     }
   }
 
+
+  // Hàm gửi request có kèm token
   Future<User> getUserInfo(String email) async {
     try {
-      final response = await _dio.get('/username/$email');
+      String? token = await StorageService.getToken(); // Lấy token từ SharedPreferences
+      if (token == null) throw Exception("No token found");
+
+      final response = await _dio.get(
+        '/username/$email',
+        options: Options(headers: {"Authorization": "Bearer $token"}), // Thêm token vào header
+      );
+
       return User.fromJson(response.data);
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
     }
   }
 
+
+  // Hàm xử lý lỗi Dio
   String _handleDioError(DioException error) {
     switch (error.type) {
       case DioExceptionType.connectionTimeout:

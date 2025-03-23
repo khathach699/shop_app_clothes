@@ -15,6 +15,8 @@ import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
+import '../../service/StorageService.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -29,6 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     products = ProductService.getAllProducts();
+    checkUserId();
+  }
+
+  void checkUserId() async {
+    int? userId = await StorageService.getUserId();
+    print("User ID: $userId");
   }
 
   @override

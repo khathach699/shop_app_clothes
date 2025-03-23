@@ -77,7 +77,7 @@ class TLoginForm extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () {
-                  Get.to("/signUp");
+                  Get.toNamed("/signUp");
                 },
                 child: const Text(TText.signUp),
               ),

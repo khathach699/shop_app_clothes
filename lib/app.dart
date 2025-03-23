@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shop_app_clothes/pages/auth/login/login.dart';
-import 'package:shop_app_clothes/utils/constants/pagePath.dart';
+import 'package:shop_app_clothes/utils/constants/path.dart';
+
 import 'package:shop_app_clothes/utils/theme/theme.dart';
 
 class App extends StatelessWidget {
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
-      getPages: pagePath,
+      getPages: PathPage,
       theme: TApptheme.lightTheme,
       darkTheme: TApptheme.darkTheme,
       home: const LoginScreen(),
