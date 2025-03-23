@@ -11,6 +11,7 @@ class TText {
   static const String loginSubtitle = "chúc bạn trải nghiệm tốt nhất";
 
   //authe form
+  static const String userName = "User Name";
   static const String email = "E-Mail";
   static const String password = "Password";
   static const String rememberMe = "Remember Me";
