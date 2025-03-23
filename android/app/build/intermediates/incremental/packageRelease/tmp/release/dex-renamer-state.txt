@@ -1,0 +1,4 @@
+#Sat Mar 22 12:32:47 ICT 2025
+base.0=E\:\\Mobile\\Flutter\\shop_app_clothes\\android\\app\\build\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
