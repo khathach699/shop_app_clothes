@@ -1,96 +1,113 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:shop_app_clothes/pages/models/Rating.dart';
+import 'package:dio/dio.dart';
+import 'StorageService.dart';
+import '../models/Rating.dart';
 
 class RatingService {
-  final String baseUrl = 'http://10.0.2.2:8080/api/ratings';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'http://10.0.2.2:8080/api/ratings',
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 3),
+    ),
+  );
 
-  // Thêm một đánh giá mới (POST)
+  Future<String?> _getToken() async => await StorageService.getToken();
+
+  Future<Response> _authorizedRequest(
+      String method,
+      String endpoint, {
+        dynamic data,
+      }) async {
+    try {
+      String? token = await _getToken();
+      if (token == null) throw Exception("No token found");
+
+      final options = Options(
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+      );
+
+      switch (method) {
+        case 'GET':
+          return await _dio.get(endpoint, options: options);
+        case 'POST':
+          return await _dio.post(endpoint, data: jsonEncode(data), options: options);
+        default:
+          throw Exception("Unsupported HTTP method");
+      }
+    } on DioException catch (e) {
+      print('📌 Lỗi từ server: ${e.response?.data}');
+      throw Exception(_handleDioError(e));
+    }
+  }
+
   Future<Rating> addRating(Rating rating) async {
-    final url = Uri.parse(baseUrl);
-
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(rating.toJson()),
-    );
-
-    if (response.statusCode == 200) {
-      return Rating.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to add rating');
+    try {
+      final response = await _authorizedRequest('POST', "", data: rating.toJson());
+      if (response.data["code"] == 1000 && response.data["result"] != null) {
+        return Rating.fromJson(response.data["result"]);
+      } else {
+        throw Exception('Failed to add rating: ${response.data["message"] ?? "Unknown error"}');
+      }
+    } on DioException catch (e) {
+      throw Exception("Network error: ${_handleDioError(e)}");
+    } catch (e) {
+      throw Exception("Unexpected error: $e");
     }
   }
 
-  // Lấy danh sách đánh giá cho sản phẩm (GET)
-  Future<List<Rating>> getRatingsByProduct(int productId) async {
-    final url = Uri.parse('$baseUrl/$productId');
 
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((ratingJson) => Rating.fromJson(ratingJson)).toList();
+  Future<double> getAverageRating(int productId) async {
+    final response = await _authorizedRequest('GET', "/average/$productId");
+    if (response.data["code"] == 1000 && response.data["result"] != null) {
+      return double.tryParse(response.data["result"].toString()) ?? 0.0;
     } else {
-      throw Exception('Failed to load ratings');
+      throw Exception('Failed to load average rating');
     }
   }
 
-  // Lấy phân phối số lượng đánh giá cho mỗi mức sao (GET)
   Future<Map<String, int>> getRatingsDistribution(int productId) async {
-    final url = Uri.parse('$baseUrl/$productId');
+    final response = await _authorizedRequest('GET', "/$productId");
+    if (response.data["code"] == 1000 && response.data["result"] is List) {
+      Map<String, int> ratingDistribution = {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
 
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-
-      // Tính số lượng đánh giá cho mỗi mức sao
-      Map<String, int> ratingDistribution = {
-        '5': 0,
-        '4': 0,
-        '3': 0,
-        '2': 0,
-        '1': 0,
-      };
-
-      for (var rating in data) {
+      for (var rating in response.data["result"]) {
         int score = rating['score'];
-        if (ratingDistribution.containsKey(score.toString())) {
-          ratingDistribution[score.toString()] =
-              ratingDistribution[score.toString()]! + 1;
+        String key = score.toString();
+        if (ratingDistribution.containsKey(key)) {
+          ratingDistribution[key] = ratingDistribution[key]! + 1;
         }
       }
-
       return ratingDistribution;
     } else {
       throw Exception('Failed to load rating distribution');
     }
   }
 
-  // Lấy điểm trung bình đánh giá cho sản phẩm (GET)
-  Future<double> getAverageRating(int productId) async {
-    final url = Uri.parse('$baseUrl/average/$productId');
+  Future<int> getTotalRatings(int productId) async {
 
-    final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      return double.parse(response.body); // Chuyển đổi từ string sang double
+    final response = await _authorizedRequest('GET', "/$productId");
+    if (response.data["code"] == 1000 && response.data["result"] is List) {
+      return (response.data["result"] as List).length;
     } else {
-      throw Exception('Failed to load average rating');
+      throw Exception('Failed to load total ratings');
     }
   }
 
-  Future<int> getTotalRatings(int productId) async {
-    final url = Uri.parse('$baseUrl/$productId');
-
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.length; // Trả về số lượng đánh giá
-    } else {
-      throw Exception('Failed to load total ratings');
+  String _handleDioError(DioException error) {
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Connection timeout";
+      case DioExceptionType.receiveTimeout:
+        return "Receive timeout";
+      case DioExceptionType.badResponse:
+        return "Server error: ${error.response?.statusCode}";
+      default:
+        return "Network error";
     }
   }
 }

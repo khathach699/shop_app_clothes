@@ -16,13 +16,14 @@ class CategoryTab2 extends StatefulWidget {
 }
 
 class _CategoryTab2State extends State<CategoryTab2> {
+  final ProductService _productService = ProductService();
   late Future<List<Product>> _products;
 
   @override
   void initState() {
     super.initState();
     // Fetch products sorted by price descending initially
-    _products = ProductService.getProductsSortedByPriceAsc();
+    _products = _productService.getProductsSortedByPriceAsc();
   }
 
   @override

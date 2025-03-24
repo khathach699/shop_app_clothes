@@ -1,15 +1,12 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import '../models/Product.dart';
 
 class WishListService {
-  // 10.0.2.2
-  //192.168.100.12:8080
   static const String baseUrl = "http://10.0.2.2:8080/api/wishlist";
+  static const Map<String, String> headers = {'Content-Type': 'application/json'};
 
-  // Get wishlist of a user
+  // Lấy danh sách wishlist của người dùng
   static Future<List<Product>> getWishlist(int userId) async {
     try {
       final response = await http.get(Uri.parse("$baseUrl/$userId"));
@@ -19,64 +16,68 @@ class WishListService {
         if (data is List) {
           return data.map((item) => Product.fromJson(item)).toList();
         } else {
-          throw Exception("Invalid data format: Expected a list.");
+          throw Exception("Dữ liệu trả về không đúng định dạng.");
         }
       } else {
-        throw Exception("Failed to load wishlist: ${response.statusCode}");
+        throw Exception("Không thể tải danh sách wishlist: ${response.statusCode}");
       }
     } catch (e) {
-      throw Exception("Error fetching wishlist: $e");
+      throw Exception("Lỗi khi lấy danh sách wishlist: $e");
     }
   }
 
-  // Add product to wishlist
+  // Thêm sản phẩm vào wishlist
   static Future<void> addProductToWishlist(int userId, int productId) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/$userId/add/$productId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: headers,
       );
 
       if (response.statusCode == 200) {
-        print('Product added to wishlist');
+        print('Sản phẩm đã được thêm vào wishlist.');
       } else {
-        throw Exception('Failed to add product to wishlist');
+        throw Exception('Không thể thêm sản phẩm vào wishlist.');
       }
     } catch (e) {
-      throw Exception('Error adding product to wishlist: $e');
+      throw Exception('Lỗi khi thêm sản phẩm vào wishlist: $e');
     }
   }
 
-  // Remove product from wishlist
-  static Future<void> removeProductFromWishlist(
-    int userId,
-    int productId,
-  ) async {
+  // Xóa sản phẩm khỏi wishlist
+  static Future<void> removeProductFromWishlist(int userId, int productId) async {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/$userId/remove/$productId'),
       );
 
       if (response.statusCode == 200) {
-        print('Product removed from wishlist');
+        print('Sản phẩm đã bị xóa khỏi wishlist.');
       } else {
-        throw Exception('Failed to remove product from wishlist');
+        throw Exception('Không thể xóa sản phẩm khỏi wishlist.');
       }
     } catch (e) {
-      throw Exception('Error removing product from wishlist: $e');
+      throw Exception('Lỗi khi xóa sản phẩm khỏi wishlist: $e');
     }
   }
 
-  // Check if product is in wishlist
+  // Kiểm tra sản phẩm có trong wishlist hay không
   static Future<bool> isProductInWishlist(int userId, int productId) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/$userId/exists/$productId'),
-    );
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data; // Trả về true hoặc false từ API
-    } else {
-      throw Exception('Failed to check if product is in wishlist');
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/$userId/exists/$productId'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is bool) {
+          return data;
+        } else {
+          throw Exception("Dữ liệu trả về không đúng định dạng.");
+        }
+      } else {
+        throw Exception('Không thể kiểm tra sản phẩm trong wishlist.');
+      }
+    } catch (e) {
+      throw Exception('Lỗi khi kiểm tra sản phẩm trong wishlist: $e');
     }
   }
 }

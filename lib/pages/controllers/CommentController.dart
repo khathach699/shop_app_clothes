@@ -1,121 +1,165 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
-import 'package:get/state_manager.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:get/get.dart';
 import 'package:shop_app_clothes/pages/models/Comment.dart';
 import 'package:shop_app_clothes/pages/service/CommentService.dart';
+import '../service/StorageService.dart';
 
 class CommentController extends GetxController {
-  var comment = <Comment>[].obs;
+  var comments = <Comment>[].obs;
   var isLoading = true.obs;
   var errorMessage = "".obs;
-  late int productId;
+  var editingCommentId = RxInt(0);
+  TextEditingController? commentController; // ✅ Dùng nullable để tránh lỗi
+
+  int productId = 0;
+  int? userId;
 
   @override
   void onInit() {
     super.onInit();
+    commentController = TextEditingController(); // ✅ Khởi tạo khi onInit
+    _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    userId = await StorageService.getUserId();
+    update();
   }
 
   void initialize(int productId) {
     this.productId = productId;
-    fetchComments(productId);
+    fetchComments();
   }
 
-  Future<void> fetchComments(int productId) async {
+  Future<void> fetchComments() async {
     try {
       isLoading(true);
-      final List<Comment> fetchedComments = await CommentService().getComments(
-        productId,
-      );
-      comment.assignAll(fetchedComments);
+      print("🔹 Gửi yêu cầu lấy danh sách comments cho sản phẩm ID: $productId");
+
+      final fetchedComments = await CommentService().getCommentsByProduct(productId);
+
+      print("✅ API phản hồi: ${fetchedComments.map((c) => c.toJson()).toList()}");
+
+      comments.assignAll(fetchedComments);
+      print("📌 Danh sách comments sau khi cập nhật: ${comments.map((c) => c.toJson()).toList()}");
+
     } catch (e) {
+      print("🚨 Lỗi khi tải comments: $e");
       errorMessage.value = 'Failed to load comments';
     } finally {
       isLoading(false);
     }
   }
 
-  Future<void> addComment(String content) async {
-    final box = GetStorage();
-    int userId = box.read('userId') ?? 0;
+
+  Future<void> addComment() async {
+    if (userId == null) {
+      Get.snackbar('Lỗi', 'Bạn chưa đăng nhập.', backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
+    if (commentController?.text.isEmpty ?? true) {
+      return;
+    }
+
     final newComment = Comment(
       username: "khathach",
       timestamp: DateTime.now(),
-      content: content,
+      content: commentController!.text,
       id: 0,
       productId: productId,
-      userId: userId,
+      userId: userId!,
     );
 
     try {
-      final Comment addedComment = await CommentService().addComment(
-        newComment,
-      );
-      comment.add(addedComment);
+      final addedComment = await CommentService().addComment(newComment);
+      comments.add(addedComment);
+      commentController?.clear();
       Get.snackbar(
-        'Comment thành công', // Tiêu đề
-        'Cảm ơn bạn đã comment sản phẩm của chúng tôi.',
-        snackPosition: SnackPosition.TOP, // Vị trí thông báo
-        backgroundColor: Colors.green, // Màu nền
-        colorText: Colors.white, // Màu chữ
-        duration: Duration(seconds: 2), // Thời gian hiển thị
+        'Thành công',
+        'Cảm ơn bạn đã bình luận!',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
     } catch (e) {
-      Get.snackbar(
-        'Comment thất bại', // Tiêu đề
-        'Vui lòng kiểm tra lại.',
-        snackPosition: SnackPosition.TOP, // Vị trí thông báo
-        backgroundColor: Colors.lightBlue, // Màu nền
-        colorText: Colors.white, // Màu chữ
-        duration: Duration(seconds: 2), // Thời gian hiển thị
-      );
+      Get.snackbar('Lỗi', 'Vui lòng thử lại sau.', backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
-  Future<void> updateComment(int commentId, String newContent) async {
-    final box = GetStorage();
-    int userId = box.read('userId') ?? 0;
+  void startEditing(int commentId, String content) {
+    editingCommentId.value = commentId;
+    commentController?.text = content; // ✅ Kiểm tra null trước khi gán
+  }
 
+  void cancelEditing() {
+    editingCommentId.value = 0;
+    commentController?.clear();
+  }
+
+  Future<void> updateComment() async {
+    if (editingCommentId.value == 0) return;
     try {
-      final Comment updatedComment = await CommentService().updateComment(
-        commentId,
-        userId,
-        newContent,
+      final updatedComment = await CommentService().updateComment(
+        editingCommentId.value,
+        commentController!.text,
+        userId!,
       );
-      final index = comment.indexWhere((c) => c.id == commentId);
+      final index = comments.indexWhere((c) => c.id == editingCommentId.value);
       if (index != -1) {
-        comment[index] = updatedComment;
+        comments[index] = updatedComment;
+        comments.refresh();
         Get.snackbar(
-          'Comment thành công', // Tiêu đề
-          'Cảm ơn bạn đã comment sản phẩm của chúng tôi.',
-          snackPosition: SnackPosition.TOP, // Vị trí thông báo
-          backgroundColor: Colors.green, // Màu nền
-          colorText: Colors.white, // Màu chữ
-          duration: Duration(seconds: 2), // Thời gian hiển thị
+          'Cập nhât thành  công',
+          'Cảm ơn bạn đã cập nhât bình luận!',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
         );
+      } else {
+        print("⚠ Không tìm thấy comment để cập nhật!");
       }
-    } catch (e) {
-      errorMessage.value = 'Failed to update comment';
+      cancelEditing();
+    } catch (e, stacktrace) {
+
+      Get.snackbar('Lỗi', 'Cập nhật thất bại.', backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
-  Future<void> deleteComment(int commentId) async {
-    final box = GetStorage();
-    int userId = box.read('userId') ?? 0;
 
+  Future<void> deleteComment(int commentId, int userId) async {
     try {
       await CommentService().deleteComment(commentId, userId);
-      comment.removeWhere((c) => c.id == commentId);
+
+      if (comments.isEmpty) {
+        return;
+      }
+
+      bool exists = comments.any((c) => c.id == commentId);
+      if (!exists) {
+
+        return;
+      }
+
+      // Xóa comment khỏi danh sách
+      comments.removeWhere((c) => c.id == commentId);
       Get.snackbar(
-        'Comment xóa thành công', // Tiêu đề
+        'Xoá thành công',
         '',
-        snackPosition: SnackPosition.TOP, // Vị trí thông báo
-        backgroundColor: Colors.lightBlue, // Màu nền
-        colorText: Colors.white, // Màu chữ
-        duration: Duration(seconds: 2), // Thời gian hiển thị
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
+
     } catch (e) {
-      errorMessage.value = 'Failed to delete comment';
+
+      Get.snackbar('Lỗi', 'Xóa thất bại.', backgroundColor: Colors.red, colorText: Colors.white);
     }
+  }
+
+
+  @override
+  void onClose() {
+    commentController?.dispose();
+    super.onClose();
   }
 }

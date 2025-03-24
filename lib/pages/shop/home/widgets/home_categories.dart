@@ -9,14 +9,15 @@ import 'package:shop_app_clothes/utils/constants/size.dart';
 
 // Import model CategoryResponse
 class THomeCategories extends StatelessWidget {
-  const THomeCategories({super.key});
+  final CategoryService _categoryService = CategoryService();
+  THomeCategories({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
       child: FutureBuilder<List<CategoryResponse>>(
-        future: CategoryService.getCategoriesWithProducts(),
+        future: _categoryService.getAllCategories(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Column(
@@ -90,7 +91,7 @@ class THomeCategories extends StatelessWidget {
                   if (category.id != null) {
                     Get.to(
                       () => CategoriesScreen(
-                        categoryId: category.id.toString(),
+                        categoryId: category.id,
                       ), // category.id should be valid here
                     );
                   } else {

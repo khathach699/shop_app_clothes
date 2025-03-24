@@ -25,12 +25,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ProductService _productService = ProductService();
   late Future<List<Product>> products;
 
   @override
   void initState() {
     super.initState();
-    products = ProductService.getAllProducts();
+    products = _productService.getAllProducts();
     checkUserId();
   }
 

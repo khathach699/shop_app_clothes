@@ -3,7 +3,7 @@ class Comment {
   final int productId;
   final int userId;
   final String username;
-  final String content;
+  late final String content;
   final DateTime timestamp;
   final int? parentCommentId;
   final List<Comment> replies;

@@ -12,6 +12,7 @@ class AllProducts extends StatefulWidget {
 }
 
 class _AllProductsState extends State<AllProducts> {
+  final ProductService _productService = ProductService();
   late Future<List<Product>> products;
   List<Product> filteredProducts = [];
   late TextEditingController _searchController;
@@ -20,7 +21,7 @@ class _AllProductsState extends State<AllProducts> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    products = ProductService.getAllProducts(); // Fetch products on init
+    products = _productService.getAllProducts(); // Fetch products on init
   }
 
   @override

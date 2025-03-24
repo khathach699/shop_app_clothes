@@ -12,12 +12,14 @@ import 'package:shop_app_clothes/pages/shop/all_products/all_products.dart';
 import 'package:shop_app_clothes/pages/shop/store/widgets/Category_tab2.dart';
 import 'package:shop_app_clothes/pages/shop/store/widgets/category_tab.dart';
 import 'package:shop_app_clothes/pages/shop/store/widgets/category_tab3.dart';
-import 'package:shop_app_clothes/pages/service/CategoryService.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
+import '../../service/CategoryService.dart';
+
 class StoreScreen extends StatefulWidget {
+
   const StoreScreen({super.key});
 
   @override
@@ -25,11 +27,12 @@ class StoreScreen extends StatefulWidget {
 }
 
 class _StoreScreenState extends State<StoreScreen> {
+  final CategoryService _categoryService = CategoryService();
   late Future<List<CategoryResponse>> _categoriesFuture;
   @override
   void initState() {
     super.initState();
-    _categoriesFuture = CategoryService.getCategoriesWithProducts();
+    _categoriesFuture = _categoryService.getAllCategories();
   }
 
   @override

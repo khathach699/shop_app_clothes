@@ -1,52 +1,72 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shop_app_clothes/pages/models/Category.dart';
+import 'StorageService.dart';
 
 class CategoryService {
-  static const String _baseURL = 'http://10.0.2.2:8080/api/categories';
+  static const String _baseUrl = 'http://10.0.2.2:8080/api/categories';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: _baseUrl,
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 3),
+    ),
+  );
 
-  // Function to get all categories with products
-  static Future<List<CategoryResponse>> getCategoriesWithProducts() async {
-    try {
-      final url = '$_baseURL';
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(utf8.decode(response.bodyBytes));
+  Future<String?> _getToken() async {
+    return await StorageService.getToken();
+  }
+
+  Future<Response> _authorizedGetRequest(String endpoint) async {
+    String? token = await _getToken();
+    if (token == null) throw Exception("No token found");
+    return await _dio.get(endpoint,
+        options: Options(headers: {"Authorization": "Bearer $token"}));
+  }
+
+  Future<List<CategoryResponse>> getAllCategories() async {
+    try{
+      final response = await _authorizedGetRequest('');
+      if(response.data["code"] == 1000 && response.data["result"] != null){
+        print(response.data);
+        List<dynamic> jsonData = response.data["result"];
         return jsonData.map((data) => CategoryResponse.fromJson(data)).toList();
-      } else {
-        throw Exception('Failed to load categories');
+      }else{
+        throw Exception("Failed to fetch categories: Invalid response from server");
       }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
-    } catch (e) {
-      print("Unexpected error: $e");
-      throw Exception('An unexpected error occurred: $e');
+    }on DioException catch(e){
+      throw Exception(_handleDioError(e));
     }
   }
 
-  // Function to get category by ID with products
-  static Future<CategoryResponse> getCategoryById(String categoryId) async {
-    try {
-      final url = '$_baseURL/search/$categoryId'; // Search category by ID
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = json.decode(
-          utf8.decode(response.bodyBytes),
-        );
-        return CategoryResponse.fromJson(jsonData);
-      } else {
-        throw Exception('Failed to load category by ID');
+  Future<CategoryResponse> getCategoryById(int id) async {
+    try{
+      final response = await _authorizedGetRequest("/search$id");
+      if(response.data["code"] == 1000 && response.data["result"] != null){
+        return CategoryResponse.fromJson(response.data["result"]);
+      }else{
+        throw Exception("Failed to fetch category: Invalid response from server");
       }
-    } on SocketException {
-      throw Exception(
-        'Failed to connect to the network. Please check your connection.',
-      );
-    } catch (e) {
-      print("Unexpected error: $e");
-      throw Exception('An unexpected error occurred: $e');
+    }on DioException catch(e){
+      throw Exception(_handleDioError(e));
+    }
+  }
+
+  String  _handleDioError(DioException error){
+    switch(error.type){
+      case DioException.connectionTimeout:
+        return "Connection timeout";
+      case DioException.sendTimeout:
+        return "Send timeout";
+      case DioException.receiveTimeout:
+        return "Receive timeout";
+      case DioException.badResponse:
+        return "Server error: ${error.response?.statusCode}";
+      default:
+        return "Network error";
+
     }
   }
 }
