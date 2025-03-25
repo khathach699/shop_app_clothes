@@ -24,7 +24,6 @@ class CartController extends GetxController {
         final items = await CartService().getCart(userId);
         cartItems.assignAll(items ?? []);
       } catch (e) {
-        print('Error fetching cart: $e');
       } finally {
         isLoading.value = false;
       }

@@ -37,7 +37,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void checkUserId() async {
     int? userId = await StorageService.getUserId();
-    print("User ID: $userId");
   }
 
   @override

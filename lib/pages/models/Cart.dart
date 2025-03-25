@@ -22,9 +22,6 @@ class CartItem {
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
-    print(
-      'Parsing CartItem: $json',
-    ); // Add this to see what data is being parsed
     return CartItem(
       cartId: json['cartId'],
       productId: json['productId'],

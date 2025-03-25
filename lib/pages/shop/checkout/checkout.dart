@@ -52,8 +52,6 @@ class TCheckOut extends StatelessWidget {
 
     // Bây giờ bạn có thể xử lý `cartItems` hoặc `order` tùy thuộc vào dữ liệu nhận được.
 
-    print("${cartItems}");
-
     // Mã phương thức thanh toán mặc định
     int selectedPaymentMethodId = 1;
 

@@ -11,14 +11,12 @@ class OrderController extends GetxController {
 
   // Fetch orders for the logged-in user
   Future<void> fetchOrders() async {
-    print("fetchOrders started"); // Kiểm tra khi hàm bắt đầu
     isLoading.value = true;
 
     final box = GetStorage();
     int userId = box.read('userId') ?? 0;
 
     if (userId == 0) {
-      print("Error: userId not found in GetStorage.");
       isLoading.value = false;
       return;
     }
@@ -27,18 +25,15 @@ class OrderController extends GetxController {
       final List<dynamic> fetchedData = await orderService.getOrdersByUserId(
         userId,
       );
-      print("Fetched Data: $fetchedData"); // In dữ liệu từ API
+
       final List<OrderList> fetchedOrders =
           fetchedData
               .map((orderData) => OrderList.fromJson(orderData))
               .toList();
       orders.assignAll(fetchedOrders);
-      print("Orders updated: ${orders.length}"); // Kiểm tra số lượng đơn hàng
     } catch (e) {
-      print("Error in fetchOrders: $e");
     } finally {
-      isLoading.value = false; // Đảm bảo isLoading luôn được đặt thành false
-      print("fetchOrders ended"); // Kiểm tra khi hàm kết thúc
+      isLoading.value = false;
     }
   }
 }

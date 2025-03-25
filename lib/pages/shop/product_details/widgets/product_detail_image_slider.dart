@@ -41,7 +41,7 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
     int? userId = box.read('userId');
     if (userId != null) {
       // Kiểm tra trạng thái wishlist ban đầu mà không thay đổi gì
-      await _wishlistController.checkIfInWishlist(userId, widget.product.id);
+      await _wishlistController.checkIfInWishlist( widget.product.id);
     }
   }
 
@@ -101,15 +101,9 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                             ? Colors.red
                             : Colors.grey,
                     onPressed: () async {
-                      final box = GetStorage();
-                      int? userId = box.read('userId');
-                      if (userId != null) {
-                        // Toggle wishlist when the button is pressed
-                        await _wishlistController.toggleWishlist(
-                          userId,
-                          widget.product.id,
-                        );
-                      }
+                      await _wishlistController.toggleWishlist(
+                        widget.product.id,
+                      );
                     },
                   );
                 }),

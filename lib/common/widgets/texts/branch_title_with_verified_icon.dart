@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as TextAline;
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/texts/t_brand_title_text.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';

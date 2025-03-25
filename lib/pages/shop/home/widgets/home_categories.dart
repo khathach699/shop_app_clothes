@@ -94,11 +94,7 @@ class THomeCategories extends StatelessWidget {
                         categoryId: category.id,
                       ), // category.id should be valid here
                     );
-                  } else {
-                    print(
-                      "Invalid category ID: ${category.id}",
-                    ); // Log the issue if id is invalid
-                  }
+                  } else {}
                 },
 
                 child: TVerticalImageText(

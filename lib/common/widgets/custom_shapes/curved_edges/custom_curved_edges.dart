@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class TCustomCurvedEdge extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    // TODO: implement getClip
     var path = Path();
     path.lineTo(0, size.height);
     final firstCurve = Offset(0, size.height - 20);
@@ -41,7 +40,6 @@ class TCustomCurvedEdge extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    // TODO: implement shouldReclip
     return true;
   }
 }

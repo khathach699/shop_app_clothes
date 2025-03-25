@@ -74,9 +74,7 @@ class TOrderListItem extends StatelessWidget {
                               orderItems: order.orderItems,
                             ),
                           );
-                        } else {
-                          print("No items in order.");
-                        }
+                        } else {}
                       },
                       icon: Icon(
                         Icons.arrow_forward,

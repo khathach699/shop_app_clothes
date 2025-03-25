@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'package:shop_app_clothes/pages/models/PaymentMothod.dart';
 
 class PaymentMethodService {
@@ -25,6 +23,7 @@ class PaymentMethodService {
       throw Exception(_handleDioError(e));
     }
   }
+
   String _handleDioError(DioException error) {
     switch (error.type) {
       case DioException.connectionTimeout:

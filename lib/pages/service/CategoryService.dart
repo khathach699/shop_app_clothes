@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:shop_app_clothes/pages/models/Category.dart';
+
 import 'StorageService.dart';
 
 class CategoryService {
@@ -21,41 +20,56 @@ class CategoryService {
 
   Future<Response> _authorizedGetRequest(String endpoint) async {
     String? token = await _getToken();
+
     if (token == null) throw Exception("No token found");
-    return await _dio.get(endpoint,
-        options: Options(headers: {"Authorization": "Bearer $token"}));
+    return await _dio.get(
+      endpoint,
+      options: Options(headers: {"Authorization": "Bearer $token"}),
+    );
   }
 
   Future<List<CategoryResponse>> getAllCategories() async {
-    try{
+    try {
       final response = await _authorizedGetRequest('');
-      if(response.data["code"] == 1000 && response.data["result"] != null){
-        print(response.data);
+
+      if (response.data["code"] == 1000 && response.data["result"] != null) {
+
         List<dynamic> jsonData = response.data["result"];
         return jsonData.map((data) => CategoryResponse.fromJson(data)).toList();
-      }else{
-        throw Exception("Failed to fetch categories: Invalid response from server");
+      } else {
+        throw Exception(
+          "Failed to fetch categories: Invalid response from server",
+        );
       }
-    }on DioException catch(e){
+    } on DioException catch (e) {
+      print('Dio error: ${e.message}');
       throw Exception(_handleDioError(e));
+    } catch (e) {
+      print('General error: $e');
+      throw Exception("Failed to fetch categories: $e");
     }
   }
 
   Future<CategoryResponse> getCategoryById(int id) async {
-    try{
-      final response = await _authorizedGetRequest("/search$id");
-      if(response.data["code"] == 1000 && response.data["result"] != null){
+    print("Categories");
+    try {
+      final response = await _authorizedGetRequest("/search/$id");
+
+      print(response.data);
+      if (response.data["code"] == 1000 && response.data["result"] != null) {
         return CategoryResponse.fromJson(response.data["result"]);
-      }else{
-        throw Exception("Failed to fetch category: Invalid response from server");
+      } else {
+        throw Exception(
+          "Failed to fetch category: Invalid response from server",
+        );
       }
-    }on DioException catch(e){
+    } on DioException catch (e) {
       throw Exception(_handleDioError(e));
     }
   }
 
-  String  _handleDioError(DioException error){
-    switch(error.type){
+  String _handleDioError(DioException error) {
+    switch (error.type) {
       case DioException.connectionTimeout:
         return "Connection timeout";
       case DioException.sendTimeout:
@@ -66,7 +80,6 @@ class CategoryService {
         return "Server error: ${error.response?.statusCode}";
       default:
         return "Network error";
-
     }
   }
 }

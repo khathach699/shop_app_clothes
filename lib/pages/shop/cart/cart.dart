@@ -50,8 +50,6 @@ class CartScreen extends StatelessWidget {
                 controller.cartItems.isEmpty
                     ? null
                     : () {
-                      print("${controller.cartItems}");
-                      // Chuyển đến trang thanh toán và truyền danh sách sản phẩm
                       Get.to(
                         () => TCheckOut(),
                         arguments: {

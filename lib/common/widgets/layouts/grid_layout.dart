@@ -15,7 +15,6 @@ class TGridLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return GridView.builder(
       itemCount: itemCount,
       padding: EdgeInsets.zero,

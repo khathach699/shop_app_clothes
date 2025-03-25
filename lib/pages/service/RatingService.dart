@@ -15,10 +15,10 @@ class RatingService {
   Future<String?> _getToken() async => await StorageService.getToken();
 
   Future<Response> _authorizedRequest(
-      String method,
-      String endpoint, {
-        dynamic data,
-      }) async {
+    String method,
+    String endpoint, {
+    dynamic data,
+  }) async {
     try {
       String? token = await _getToken();
       if (token == null) throw Exception("No token found");
@@ -34,23 +34,32 @@ class RatingService {
         case 'GET':
           return await _dio.get(endpoint, options: options);
         case 'POST':
-          return await _dio.post(endpoint, data: jsonEncode(data), options: options);
+          return await _dio.post(
+            endpoint,
+            data: jsonEncode(data),
+            options: options,
+          );
         default:
           throw Exception("Unsupported HTTP method");
       }
     } on DioException catch (e) {
-      print('📌 Lỗi từ server: ${e.response?.data}');
       throw Exception(_handleDioError(e));
     }
   }
 
   Future<Rating> addRating(Rating rating) async {
     try {
-      final response = await _authorizedRequest('POST', "", data: rating.toJson());
+      final response = await _authorizedRequest(
+        'POST',
+        "",
+        data: rating.toJson(),
+      );
       if (response.data["code"] == 1000 && response.data["result"] != null) {
         return Rating.fromJson(response.data["result"]);
       } else {
-        throw Exception('Failed to add rating: ${response.data["message"] ?? "Unknown error"}');
+        throw Exception(
+          'Failed to add rating: ${response.data["message"] ?? "Unknown error"}',
+        );
       }
     } on DioException catch (e) {
       throw Exception("Network error: ${_handleDioError(e)}");
@@ -58,7 +67,6 @@ class RatingService {
       throw Exception("Unexpected error: $e");
     }
   }
-
 
   Future<double> getAverageRating(int productId) async {
     final response = await _authorizedRequest('GET', "/average/$productId");
@@ -72,7 +80,13 @@ class RatingService {
   Future<Map<String, int>> getRatingsDistribution(int productId) async {
     final response = await _authorizedRequest('GET', "/$productId");
     if (response.data["code"] == 1000 && response.data["result"] is List) {
-      Map<String, int> ratingDistribution = {'5': 0, '4': 0, '3': 0, '2': 0, '1': 0};
+      Map<String, int> ratingDistribution = {
+        '5': 0,
+        '4': 0,
+        '3': 0,
+        '2': 0,
+        '1': 0,
+      };
 
       for (var rating in response.data["result"]) {
         int score = rating['score'];
@@ -88,8 +102,6 @@ class RatingService {
   }
 
   Future<int> getTotalRatings(int productId) async {
-
-
     final response = await _authorizedRequest('GET', "/$productId");
     if (response.data["code"] == 1000 && response.data["result"] is List) {
       return (response.data["result"] as List).length;

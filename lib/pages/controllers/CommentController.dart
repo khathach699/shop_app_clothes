@@ -34,27 +34,26 @@ class CommentController extends GetxController {
   Future<void> fetchComments() async {
     try {
       isLoading(true);
-      print("🔹 Gửi yêu cầu lấy danh sách comments cho sản phẩm ID: $productId");
 
-      final fetchedComments = await CommentService().getCommentsByProduct(productId);
-
-      print("✅ API phản hồi: ${fetchedComments.map((c) => c.toJson()).toList()}");
-
+      final fetchedComments = await CommentService().getCommentsByProduct(
+        productId,
+      );
       comments.assignAll(fetchedComments);
-      print("📌 Danh sách comments sau khi cập nhật: ${comments.map((c) => c.toJson()).toList()}");
-
     } catch (e) {
-      print("🚨 Lỗi khi tải comments: $e");
       errorMessage.value = 'Failed to load comments';
     } finally {
       isLoading(false);
     }
   }
 
-
   Future<void> addComment() async {
     if (userId == null) {
-      Get.snackbar('Lỗi', 'Bạn chưa đăng nhập.', backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Lỗi',
+        'Bạn chưa đăng nhập.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
     if (commentController?.text.isEmpty ?? true) {
@@ -82,7 +81,12 @@ class CommentController extends GetxController {
         colorText: Colors.white,
       );
     } catch (e) {
-      Get.snackbar('Lỗi', 'Vui lòng thử lại sau.', backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Lỗi',
+        'Vui lòng thử lại sau.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -115,16 +119,17 @@ class CommentController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-      } else {
-        print("⚠ Không tìm thấy comment để cập nhật!");
-      }
+      } else {}
       cancelEditing();
-    } catch (e, stacktrace) {
-
-      Get.snackbar('Lỗi', 'Cập nhật thất bại.', backgroundColor: Colors.red, colorText: Colors.white);
+    } catch (e) {
+      Get.snackbar(
+        'Lỗi',
+        'Cập nhật thất bại.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
-
 
   Future<void> deleteComment(int commentId, int userId) async {
     try {
@@ -136,7 +141,6 @@ class CommentController extends GetxController {
 
       bool exists = comments.any((c) => c.id == commentId);
       if (!exists) {
-
         return;
       }
 
@@ -149,13 +153,15 @@ class CommentController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
-
     } catch (e) {
-
-      Get.snackbar('Lỗi', 'Xóa thất bại.', backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Lỗi',
+        'Xóa thất bại.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
-
 
   @override
   void onClose() {

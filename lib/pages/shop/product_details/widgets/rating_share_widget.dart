@@ -84,7 +84,7 @@ class TRateAndShare extends StatelessWidget {
       return {'averageRating': averageRating, 'totalRatings': totalRatings};
     } catch (e) {
       // Xử lý khi có lỗi xảy ra
-      print('Error fetching rating data: $e');
+
       return {'averageRating': 0.0, 'totalRatings': 0};
     }
   }

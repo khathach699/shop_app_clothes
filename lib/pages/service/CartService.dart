@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import '../models/Cart.dart';
 import '../models/CartRequest.dart';
 import 'StorageService.dart';
-
 
 class CartService {
   static const String baseUrl = 'http://10.0.2.2:8080/api/cart';
@@ -20,7 +18,11 @@ class CartService {
     return await StorageService.getToken();
   }
 
-  Future<Response> _authorizedRequest(String method, String endpoint, {dynamic data}) async {
+  Future<Response> _authorizedRequest(
+    String method,
+    String endpoint, {
+    dynamic data,
+  }) async {
     String? token = await _getToken();
     if (token == null) throw Exception("No token found");
     return await _dio.request(
@@ -35,7 +37,11 @@ class CartService {
 
   Future<CartItem?> addToCart(CartRequest cartRequest) async {
     try {
-      final response = await _authorizedRequest("POST", "/add", data: cartRequest.toJson());
+      final response = await _authorizedRequest(
+        "POST",
+        "/add",
+        data: cartRequest.toJson(),
+      );
       if (response.data is Map<String, dynamic>) {
         return CartItem.fromJson(response.data);
       }
@@ -58,7 +64,9 @@ class CartService {
     try {
       final response = await _authorizedRequest("GET", "/list/$userId");
       if (response.data is List) {
-        return List<CartItem>.from(response.data.map((item) => CartItem.fromJson(item)));
+        return List<CartItem>.from(
+          response.data.map((item) => CartItem.fromJson(item)),
+        );
       }
       throw Exception('Unexpected response format for getCart');
     } on DioException catch (e) {

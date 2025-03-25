@@ -146,7 +146,6 @@ class TBottomAddToCartWidGet extends StatelessWidget {
               await box.write('cartItems', cartItems);
 
               // Debug print to check cartItems after updating
-              print('Updated cart items: $cartItems');
 
               // Optionally, show a confirmation or update the UI
             },

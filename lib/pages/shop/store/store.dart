@@ -19,7 +19,6 @@ import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 import '../../service/CategoryService.dart';
 
 class StoreScreen extends StatefulWidget {
-
   const StoreScreen({super.key});
 
   @override
@@ -113,7 +112,6 @@ class _StoreScreenState extends State<StoreScreen> {
                                             .length, // Count of products in the category
                                     onTap: () {
                                       // Handle navigation or actions on tap
-                                      print("Tapped on ${category.name}");
                                     },
                                   );
                                 } else {

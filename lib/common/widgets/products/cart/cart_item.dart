@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_roundted_image.dart';
-import 'package:shop_app_clothes/common/widgets/texts/branch_title_with_verified_icon.dart';
 import 'package:shop_app_clothes/common/widgets/texts/product_title_text.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 import 'package:shop_app_clothes/utils/helpers/helper_functions.dart';
 
 import '../../icons/t_circular_icon.dart';
 import '../../texts/product_price_text.dart';
-
 
 class TCartItem extends StatelessWidget {
   final String productName;
@@ -29,7 +26,9 @@ class TCartItem extends StatelessWidget {
     required this.sizeName,
     required this.productImage,
     required this.cartId,
-    required this.onRemove, required this.quantity, required this.price,
+    required this.onRemove,
+    required this.quantity,
+    required this.price,
   });
 
   @override
@@ -44,7 +43,10 @@ class TCartItem extends StatelessWidget {
               width: 60,
               height: 60,
               padding: const EdgeInsets.all(TSize.sm),
-              backgroundColor: THelperFunctions.isDarkMode(context) ? TColors.darkGrey : TColors.light,
+              backgroundColor:
+                  THelperFunctions.isDarkMode(context)
+                      ? TColors.darkGrey
+                      : TColors.light,
             ),
             SizedBox(width: TSize.spaceBtwItems),
             Expanded(
@@ -53,19 +55,30 @@ class TCartItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(
-                    child: TProductTitleText(
-                      title: productName,
-                      maxLines: 1,
-                    ),
+                    child: TProductTitleText(title: productName, maxLines: 1),
                   ),
                   SizedBox(height: TSize.spaceBtwItems), // Corrected spacing
                   Row(
                     children: [
-                      Text("Color: ", style: Theme.of(context).textTheme.bodyMedium),
-                      Text(colorName, style: Theme.of(context).textTheme.bodyMedium),
-                      SizedBox(width: TSize.spaceBtwItems), // Spacing between color and size
-                      Text("Size: ", style: Theme.of(context).textTheme.bodyMedium),
-                      Text(sizeName, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(
+                        "Color: ",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Text(
+                        colorName,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      SizedBox(
+                        width: TSize.spaceBtwItems,
+                      ), // Spacing between color and size
+                      Text(
+                        "Size: ",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      Text(
+                        sizeName,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ],
                   ),
                 ],
@@ -78,7 +91,7 @@ class TCartItem extends StatelessWidget {
                   onPressed: onRemove,
                   // Call the remove callback
                 ),
-                SizedBox(height: TSize.spaceBtwItems / 2,),
+                SizedBox(height: TSize.spaceBtwItems / 2),
                 TProductPriceText(price: price.toString()),
               ],
             ),

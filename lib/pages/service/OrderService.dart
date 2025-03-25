@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'dart:convert';
 
 import 'StorageService.dart';
 
@@ -17,7 +16,11 @@ class OrderService {
     return await StorageService.getToken();
   }
 
-  Future<Response> _authorizedRequest(String method, String endpoint, {dynamic data}) async {
+  Future<Response> _authorizedRequest(
+    String method,
+    String endpoint, {
+    dynamic data,
+  }) async {
     String? token = await _getToken();
     if (token == null) throw Exception("No token found");
     return await _dio.request(
@@ -32,7 +35,11 @@ class OrderService {
 
   Future<bool> createOrder(Map<String, dynamic> orderData) async {
     try {
-      final response = await _authorizedRequest("POST", "/add", data: orderData);
+      final response = await _authorizedRequest(
+        "POST",
+        "/add",
+        data: orderData,
+      );
       return response.statusCode == 200 || response.statusCode == 201;
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));

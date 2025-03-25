@@ -1,83 +1,93 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../models/Product.dart';
+import 'package:dio/dio.dart';
+import 'package:shop_app_clothes/pages/models/Product.dart';
+import 'package:shop_app_clothes/pages/models/WishlistItem.dart';
+import 'package:shop_app_clothes/pages/service/StorageService.dart';
+
+// Hằng số cấu hình
+const String _baseUrl = "http://10.0.2.2:8080/api/wishlist";
+const int _connectTimeout = 5000; // ms
+const int _receiveTimeout = 3000; // ms
 
 class WishListService {
-  static const String baseUrl = "http://10.0.2.2:8080/api/wishlist";
-  static const Map<String, String> headers = {'Content-Type': 'application/json'};
+  final Dio _dio;
 
-  // Lấy danh sách wishlist của người dùng
-  static Future<List<Product>> getWishlist(int userId) async {
-    try {
-      final response = await http.get(Uri.parse("$baseUrl/$userId"));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(utf8.decode(response.bodyBytes));
-        if (data is List) {
-          return data.map((item) => Product.fromJson(item)).toList();
-        } else {
-          throw Exception("Dữ liệu trả về không đúng định dạng.");
-        }
-      } else {
-        throw Exception("Không thể tải danh sách wishlist: ${response.statusCode}");
-      }
-    } catch (e) {
-      throw Exception("Lỗi khi lấy danh sách wishlist: $e");
-    }
-  }
-
-  // Thêm sản phẩm vào wishlist
-  static Future<void> addProductToWishlist(int userId, int productId) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/$userId/add/$productId'),
-        headers: headers,
+  WishListService()
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: _baseUrl,
+          connectTimeout: Duration(milliseconds: _connectTimeout),
+          receiveTimeout: Duration(milliseconds: _receiveTimeout),
+        ),
       );
 
-      if (response.statusCode == 200) {
-        print('Sản phẩm đã được thêm vào wishlist.');
-      } else {
-        throw Exception('Không thể thêm sản phẩm vào wishlist.');
-      }
-    } catch (e) {
-      throw Exception('Lỗi khi thêm sản phẩm vào wishlist: $e');
+  Future<String?> _getToken() async => await StorageService.getToken();
+
+  Future<Response> _authorizedRequest(
+    String endpoint, {
+    String method = 'GET',
+    dynamic data,
+  }) async {
+    final token = await _getToken();
+    if (token == null) throw Exception('No token found');
+
+    final options = Options(
+      method: method,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    try {
+      return await _dio.request(endpoint, options: options, data: data);
+    } on DioException catch (e) {
+      throw Exception(_handleDioError(e));
     }
   }
 
-  // Xóa sản phẩm khỏi wishlist
-  static Future<void> removeProductFromWishlist(int userId, int productId) async {
-    try {
-      final response = await http.delete(
-        Uri.parse('$baseUrl/$userId/remove/$productId'),
+  Future<List<Product>> getWishlist(int userId) async {
+    final response = await _authorizedRequest('/$userId');
+    if (response.data is List) {
+      return (response.data as List)
+          .map((item) => Product.fromJson(item))
+          .toList();
+    }
+    throw Exception('Dữ liệu trả về không đúng định dạng.');
+  }
+
+  Future<WishlistItem> addProductToWishlist(int userId, int productId) async {
+    final response = await _authorizedRequest(
+      '/$userId/add/$productId',
+      method: 'POST',
+    );
+    if (response.data["code"] == 1000 && response.data["result"] != null) {
+      return WishlistItem.fromJson(response.data["result"]);
+    } else {
+      throw Exception(
+        'Failed to add product to wishlist: ${response.data["message"] ?? "Unknown error"}',
       );
-
-      if (response.statusCode == 200) {
-        print('Sản phẩm đã bị xóa khỏi wishlist.');
-      } else {
-        throw Exception('Không thể xóa sản phẩm khỏi wishlist.');
-      }
-    } catch (e) {
-      throw Exception('Lỗi khi xóa sản phẩm khỏi wishlist: $e');
     }
   }
 
-  // Kiểm tra sản phẩm có trong wishlist hay không
-  static Future<bool> isProductInWishlist(int userId, int productId) async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/$userId/exists/$productId'));
+  Future<void> removeProductFromWishlist(int userId, int productId) async {
+    await _authorizedRequest('/$userId/remove/$productId', method: 'DELETE');
+  }
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is bool) {
-          return data;
-        } else {
-          throw Exception("Dữ liệu trả về không đúng định dạng.");
-        }
-      } else {
-        throw Exception('Không thể kiểm tra sản phẩm trong wishlist.');
-      }
-    } catch (e) {
-      throw Exception('Lỗi khi kiểm tra sản phẩm trong wishlist: $e');
+  Future<bool> isProductInWishlist(int userId, int productId) async {
+    final response = await _authorizedRequest('/$userId/exists/$productId');
+    if (response.data is bool) return response.data as bool;
+    throw Exception('Dữ liệu trả về không đúng định dạng.');
+  }
+
+  String _handleDioError(DioException error) {
+    switch (error.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Connection timeout";
+      case DioExceptionType.sendTimeout:
+        return "Send timeout";
+      case DioExceptionType.receiveTimeout:
+        return "Receive timeout";
+      case DioExceptionType.badResponse:
+        return "Server error: ${error.response?.statusCode}";
+      default:
+        return "Network error";
     }
   }
 }

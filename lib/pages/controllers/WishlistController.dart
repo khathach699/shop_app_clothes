@@ -1,55 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import '../service/WishlistService.dart';
+import 'package:shop_app_clothes/pages/models/Product.dart';
+import 'package:shop_app_clothes/pages/service/WishlistService.dart';
+
+import '../service/StorageService.dart';
 
 class WishlistController extends GetxController {
-  var isInWishlist = false.obs;
+  final WishListService _wishlistService = WishListService();
 
-  // Hàm kiểm tra sản phẩm có trong wishlist không
-  Future<void> checkIfInWishlist(int userId, int productId) async {
+  // Observable state
+  final wishlist = <Product>[].obs;
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
+  final isInWishlist = false.obs;
+  int? userId;
+
+  @override
+  void onInit() async {
+    super.onInit();
+    fetchWishlist();
+    await _loadUserId();
+  }
+
+  Future<void> _loadUserId() async {
+    userId = await StorageService.getUserId();
+    update();
+  }
+
+  Future<void> fetchWishlist() async {
+    if (userId == null) {
+      errorMessage.value = 'User not logged in!';
+      return;
+    }
     try {
-      bool exists = await WishListService.isProductInWishlist(
-        userId,
-        productId,
-      );
-      isInWishlist.value = exists; // Chỉ cập nhật trạng thái
+      isLoading.value = true;
+      errorMessage.value = '';
+      final fetchedWishlist = await _wishlistService.getWishlist(userId!);
+      wishlist.assignAll(fetchedWishlist);
     } catch (e) {
-      print("Error checking wishlist status: $e");
+      errorMessage.value = 'Failed to fetch wishlist: $e';
+      wishlist.clear();
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  // Hàm toggle wishlist khi người dùng nhấn vào nút
-  toggleWishlist(int userId, int productId) async {
+  Future<void> checkIfInWishlist(int productId) async {
+    if (userId == null) return;
+    try {
+      final exists = await _wishlistService.isProductInWishlist(
+        userId!,
+        productId,
+      );
+      isInWishlist.value = exists;
+    } catch (e) {
+      errorMessage.value = 'Error checking wishlist: $e';
+    }
+  }
+
+  Future<void> toggleWishlist(int productId) async {
+    if (userId == null) {
+      Get.snackbar('Error', 'Please log in to manage wishlist');
+      return;
+    }
+
     try {
       if (isInWishlist.value) {
-        // If the product is in the wishlist, remove it
-        await WishListService.removeProductFromWishlist(userId, productId);
+        await _wishlistService.removeProductFromWishlist(userId!, productId);
+        wishlist.removeWhere((p) => p.id == productId);
+        isInWishlist.value = false;
         Get.snackbar(
-          'wishlist xóa thành công', // Tiêu đề
+          'Wishlist xóa thành công',
           'Sản phẩm đã được xóa khỏi wishlist.',
-          snackPosition: SnackPosition.TOP, // Vị trí thông báo
-          backgroundColor: Colors.green, // Màu nền
-          colorText: Colors.white, // Màu chữ
-          duration: Duration(seconds: 2), // Thời gian hiển thị
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
         );
       } else {
-        // If the product is not in the wishlist, add it
-        await WishListService.addProductToWishlist(userId, productId);
+        await _wishlistService.addProductToWishlist(userId!, productId);
+        isInWishlist.value = true;
         Get.snackbar(
-          'wishlist thành công', // Tiêu đề
+          'Wishlist thành công',
           'Sản phẩm đã được thêm vào wishlist.',
-          snackPosition: SnackPosition.TOP, // Vị trí thông báo
-          backgroundColor: Colors.green, // Màu nền
-          colorText: Colors.white, // Màu chữ
-          duration: Duration(seconds: 2), // Thời gian hiển thị
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
         );
       }
-
-      // After the API request, update the state
-      isInWishlist.value = !isInWishlist.value;
     } catch (e) {
-      print("Error toggling wishlist: $e");
+      errorMessage.value = 'Error toggling wishlist: $e';
+      Get.snackbar(
+        'Error toggling wishlist',
+        '$e.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 }
