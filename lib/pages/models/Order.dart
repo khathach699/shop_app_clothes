@@ -59,4 +59,28 @@ class Order {
       "orderItems": orderItems.map((item) => item.toJson()).toList(),
     };
   }
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    try {
+      return Order(
+        userId: json["userId"] ?? 0,
+        paymentMethodId: json["paymentMethodId"] != null ? json["paymentMethodId"] as int : 0,
+        userName: json["userName"]?.toString() ?? "Unknown",
+        address: json["address"]?.toString() ?? "No address",
+        phoneNumber: json["phoneNumber"]?.toString() ?? "No phone",
+        orderItems: (json["orderItems"] as List?)
+            ?.map((item) => OrderItem.fromJson(item as Map<String, dynamic>))
+            .toList() ??
+            [],
+      );
+    } catch (e) {
+      print("Error in Order.fromJson: $e");
+      throw Exception("Error parsing Order JSON");
+    }
+  }
+
+
+
+
+
 }

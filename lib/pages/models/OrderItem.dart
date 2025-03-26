@@ -25,15 +25,17 @@ class OrderItem {
       "priceAtOrder": priceAtOrder,
     };
   }
-
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
-      productId: json['productId'] as int,
-      quantity: json['quantity'] as int,
+      productId: json['productId'] ?? 0,
+      productName: json['productName']?.toString(),
+      quantity: json['quantity'] ?? 0,
+      priceAtOrder: json['priceAtOrder'] != null ? (json['priceAtOrder'] as num).toDouble() : 0.0,
       colorId: json['colorId'] as int?,
       sizeId: json['sizeId'] as int?,
-      productName: json['productName'] as String?,
-      priceAtOrder: json['priceAtOrder'] as double?,
+      // Chống lỗi null
     );
   }
+
+
 }

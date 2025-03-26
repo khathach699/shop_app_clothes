@@ -9,7 +9,7 @@ import '../service/StorageService.dart';
 class OrderController extends GetxController {
   var orders = <OrderList>[].obs;
   var isLoading = true.obs;
-  final userId = Rxn<int>();
+  int? userId;
   final OrderService orderService = OrderService();
 
   @override
@@ -20,25 +20,38 @@ class OrderController extends GetxController {
   }
 
   Future<void> _loadUserId() async {
-    userId.value = await StorageService.getUserId();
+    userId = await StorageService.getUserId();
+    update();
   }
   // Fetch orders for the logged-in user
   Future<void> fetchOrders() async {
     isLoading.value = true;
 
     try {
-      final List<dynamic> fetchedData = await orderService.getOrdersByUserId(
-        userId as int,
-      );
+      if (userId == null) {
+        throw Exception("User ID is null");
+      }
+
+      final List<dynamic> fetchedData = await orderService.getOrdersByUserId(userId!);
+
+      if (fetchedData.isEmpty) {
+        print("No orders found");
+        orders.clear(); // Xóa danh sách cũ nếu không có đơn hàng mới
+        return;
+      }
+
+      print("Fetched orders: $fetchedData");
 
       final List<OrderList> fetchedOrders =
-          fetchedData
-              .map((orderData) => OrderList.fromJson(orderData))
-              .toList();
+      fetchedData.map((orderData) => OrderList.fromJson(orderData)).toList();
+
       orders.assignAll(fetchedOrders);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print("Error fetching orders: $e");
+      print("Stack trace: $stackTrace");
     } finally {
       isLoading.value = false;
     }
   }
+
 }

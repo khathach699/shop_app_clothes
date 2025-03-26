@@ -3,7 +3,7 @@ import 'package:shop_app_clothes/pages/models/OrderItem.dart';
 class OrderList {
   final int orderId; // Thêm thuộc tính orderId
   final int userId;
-  // final int paymentMethodId;
+  final int paymentMethodId;
   final String userName;
   final String address;
   final String phoneNumber;
@@ -17,7 +17,7 @@ class OrderList {
   OrderList({
     required this.orderId,
     required this.userId,
-    // required this.paymentMethodId,
+    required this.paymentMethodId,
     required this.userName,
     required this.address,
     required this.phoneNumber,
@@ -54,7 +54,7 @@ class OrderList {
     return OrderList(
       orderId: 0, // Giá trị mặc định
       userId: userId,
-      // paymentMethodId: paymentMethodId,
+      paymentMethodId: paymentMethodId,
       userName: userName,
       address: address,
       phoneNumber: phoneNumber,
@@ -73,14 +73,14 @@ class OrderList {
       return OrderList(
         orderId: json['orderId'],
         userId: json['userId'],
-        // paymentMethodId: json['paymentMethodId'],
+        paymentMethodId: json['paymentMethodId'],
         userName: json['userName'],
         address: json['address'],
         phoneNumber: json['phoneNumber'],
         totalPrice: json['totalPrice'],
         status: json['status'],
         createdAt: json['createdAt'],
-        paymentMethodName: json['paymentMethodName'],
+        paymentMethodName: json['paymentMethodName'] ?? "cash",
         paymentStatus: json['paymentStatus'],
         orderItems:
             (json['orderItems'] as List<dynamic>)
@@ -97,7 +97,7 @@ class OrderList {
     return {
       "orderId": orderId,
       "userId": userId,
-      // "paymentMethodId": paymentMethodId,
+      "paymentMethodId": paymentMethodId,
       "userName": userName,
       "address": address,
       "phoneNumber": phoneNumber,

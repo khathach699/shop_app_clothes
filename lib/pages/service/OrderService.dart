@@ -51,14 +51,22 @@ class OrderService {
   Future<List<dynamic>> getOrdersByUserId(int userId) async {
     try {
       final response = await _authorizedRequest("GET", "/user/$userId");
-      if (response.data is List) {
-        return response.data;
+      print("Response from API: ${response.data}");
+
+      if (response.data["code"] == 1000 || response.data["result"] != null) {
+        final result = response.data["result"];
+        if (result is List) {
+          print("Orders fetched successfully: ${result}");
+          return result;
+        }
       }
-      throw Exception('Unexpected response format for getOrdersByUserId');
+
+      throw Exception("Failed to fetch orders: Invalid response from server");
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
     }
   }
+
 
   String _handleDioError(DioException error) {
     switch (error.type) {

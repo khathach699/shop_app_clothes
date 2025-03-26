@@ -8,14 +8,15 @@ import 'package:shop_app_clothes/pages/shop/order/widgets/order_list_detail.dart
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
 class TOrderListItem extends StatelessWidget {
-  final OrderController orderController = Get.put(OrderController());
+
 
   TOrderListItem({super.key}) {
-    orderController.fetchOrders(); // Fetch orders when widget is created
+
   }
 
   @override
   Widget build(BuildContext context) {
+    final orderController = Get.put(OrderController());
     return Obx(() {
       if (orderController.isLoading.value) {
         return Center(child: CircularProgressIndicator());
