@@ -1,131 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
-import 'package:shop_app_clothes/common/widgets/success_screen/success_screen.dart';
-import 'package:shop_app_clothes/pages/controllers/AddressController.dart';
-import 'package:shop_app_clothes/pages/controllers/CartController.dart';
-import 'package:shop_app_clothes/pages/controllers/ProductController.dart';
-
-import 'package:shop_app_clothes/pages/models/Order.dart'; // Import Order model
-import 'package:shop_app_clothes/pages/models/OrderItem.dart'; // Import OrderItem model
-import 'package:shop_app_clothes/pages/shop/checkout/widgets/biling_payment_section.dart'
-    as payment;
-import 'package:shop_app_clothes/pages/shop/checkout/widgets/billing_address_section.dart';
-import 'package:shop_app_clothes/pages/shop/checkout/widgets/billing_amount_section.dart';
-import 'package:shop_app_clothes/pages/service/OrderService.dart';
-import 'package:shop_app_clothes/navigation_menu.dart';
-import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
-
-import '../../../common/widgets/custom_shapes/container/rounded_container.dart';
-import '../../../common/widgets/products/cart/coupon_widget.dart';
+import 'package:shop_app_clothes/common/widgets/custom_shapes/container/rounded_container.dart';
+import 'package:shop_app_clothes/common/widgets/products/cart/coupon_widget.dart';
+import '../../controllers/AddressController.dart';
+import '../../controllers/CartController.dart';
+import '../../controllers/ProductController.dart';
+import '../../controllers/CheckoutController.dart';
+import 'widgets/billing_address_section.dart';
+import 'widgets/billing_amount_section.dart';
+import 'widgets/biling_payment_section.dart' as payment;
 
 class TCheckOut extends StatelessWidget {
   const TCheckOut({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AddressController addressController = Get.put(AddressController());
-    final OrderService orderService = OrderService();
-    final box = GetStorage();
-    int userId = box.read('userId') ?? 0;
-
-    // Eagerly initialize CartController
-    final CartController controller = Get.put(CartController());
-    final ProductController productController = Get.put(ProductController());
-
-    // Lấy cartItems được truyền từ CartScreen
-    final Map<String, dynamic> arguments = Get.arguments ?? {};
-
-    // Kiểm tra nếu có giỏ hàng (List)
-    List<dynamic> cartItems = [];
-    if (arguments['cartItems'] is List) {
-      cartItems = arguments['cartItems'];
-    }
-
-    // Kiểm tra nếu có đơn hàng (Map)
-    Map<String, dynamic> order = {};
-    if (arguments['order'] is Map) {
-      order = arguments['order'];
-    }
-
-    // Bây giờ bạn có thể xử lý `cartItems` hoặc `order` tùy thuộc vào dữ liệu nhận được.
-
-    // Mã phương thức thanh toán mặc định
-    int selectedPaymentMethodId = 1;
-
-    // Cập nhật mã phương thức thanh toán
-    void updatePaymentMethodId(int selectedId) {
-      selectedPaymentMethodId = selectedId;
-    }
-
-    Future<void> _handleCheckout() async {
-      List<OrderItem> orderItems = [];
-
-      if (cartItems.isNotEmpty) {
-        // Nếu cartItems là List
-        orderItems =
-            cartItems.map((cartItem) {
-              return OrderItem(
-                productId: cartItem.productId, // Chú ý cách truy cập dữ liệu
-                quantity: cartItem.quantity,
-                colorId:
-                    productController.colorMapping[cartItem.colorName] ??
-                    0, // Quy đổi colorName thành colorId
-                sizeId:
-                    productController.sizeMapping[cartItem.sizeName] ??
-                    0, // Quy đổi sizeName thành sizeId
-              );
-            }).toList();
-      } else if (arguments.containsKey('productId')) {
-        // Kiểm tra nếu là Map (chỉ kiểm tra productId)
-        orderItems.add(
-          OrderItem(
-            productId: arguments['productId'],
-            quantity: arguments['quantity'],
-            colorId:
-                arguments["selectedColorId"], // Quy đổi colorName thành colorId
-            sizeId: arguments["selectedSizeId"],
-            // Quy đổi sizeName thành sizeId
-          ),
-        );
-      }
-
-      // Tạo đối tượng Order
-      Order order = Order.fromCartItems(
-        userId,
-        selectedPaymentMethodId,
-        addressController.name.value,
-        addressController.address.value,
-        addressController.phone.value,
-        orderItems,
-      );
-
-      // Gửi yêu cầu tạo đơn hàng
-      bool success = await orderService.createOrder(order.toJson());
-
-      if (success) {
-        // Hiển thị màn hình thành công
-        Get.to(
-          () => SuccessScreen(
-            image: TImages.payment,
-            title: 'Payment Successful!',
-            subTitle: 'Your item has been successfully delivered.',
-            onPressed: () => Get.offAll(() => const NavigationMenu()),
-          ),
-        );
-      } else {
-        // Hiển thị thông báo lỗi
-        Get.snackbar(
-          "Error",
-          "Failed to create the order. Please try again!",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    }
+    // Khởi tạo các Controller cần thiết
+    Get.put(AddressController());
+    Get.put(CartController());
+    Get.put(ProductController());
+    final CheckoutController checkoutController = Get.put(CheckoutController());
 
     return Scaffold(
       appBar: TAppBar(
@@ -137,26 +33,27 @@ class TCheckOut extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(TSize.defaultSpace),
+          padding: const EdgeInsets.all(TSize.defaultSpace),
           child: Column(
             children: [
-              TCouponCode(),
+              const TCouponCode(),
               const SizedBox(height: TSize.spaceBtwSections),
               TRoundContainer(
                 showBorder: true,
                 padding: const EdgeInsets.all(TSize.md),
                 child: Column(
                   children: [
-                    TBillingAmountSection(),
+                    const TBillingAmountSection(),
                     const SizedBox(height: TSize.spaceBtwItems),
                     const Divider(),
                     const SizedBox(height: TSize.spaceBtwItems),
                     payment.TBillingPaymentSection(
-                      onPaymentMethodSelected: updatePaymentMethodId,
+                      onPaymentMethodSelected:
+                      checkoutController.updatePaymentMethodId,
                     ),
                     const SizedBox(height: TSize.spaceBtwItems),
                     const Divider(),
-                    TBillingAddressSection(),
+                    const TBillingAddressSection(),
                     const SizedBox(height: TSize.spaceBtwItems),
                   ],
                 ),
@@ -167,9 +64,16 @@ class TCheckOut extends StatelessWidget {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(TSize.defaultSpace),
-        child: ElevatedButton(
-          onPressed: _handleCheckout,
-          child: Text("Payment", style: Theme.of(context).textTheme.bodyLarge),
+        child: Obx(
+              () => ElevatedButton(
+            onPressed: checkoutController.isLoading.value
+                ? null
+                : checkoutController.handleCheckout,
+            child: Text(
+              checkoutController.isLoading.value ? "Processing..." : "Payment",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
         ),
       ),
     );

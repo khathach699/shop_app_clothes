@@ -1,50 +1,67 @@
-class User  {
+import 'package:intl/intl.dart';
 
+class User {
   final int? id;
   final String? username;
   final String? email;
   final String? password;
-  final List<dynamic>? wishlists; // Có thể thay đổi kiểu cho phù hợp (e.g., List<Wishlist>)
-  final List<dynamic>? carts;     // Có thể thay đổi kiểu cho phù hợp (e.g., List<Cart>)
+  final String? phone;
+  final String? gender;
+  final DateTime? dateOfBirth;
+  final List<dynamic>? wishlists;
+  final List<dynamic>? carts;
   final List<dynamic>? orders;
-  final String? message;// Có thể thay đổi kiểu cho phù hợp (e.g., List<Order>)
+  final String? message;
 
-  User ({
+  User({
     this.id,
     this.username,
     this.email,
     this.password,
+    this.phone,
+    this.gender,
+    this.dateOfBirth,
     this.wishlists,
     this.carts,
     this.orders,
-    this.message
+    this.message,
   });
 
-  // Phương thức để chuyển đổi từ JSON
-  factory User .fromJson(Map<String, dynamic> json) {
-    return User (
-      id: json['id'],
+  //  nhan api chuyen qua dart
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: int.tryParse(json['userId'].toString()), // Đổi từ 'id' thành 'userId' vì JSON trả về 'userId'
       username: json['username'],
       email: json['email'],
       password: json['password'],
-      wishlists: json['wishlists'], // Cần map từng phần tử nếu `wishlists` là danh sách object
-      carts: json['carts'],         // Cần map tương tự như trên
+      phone: json['phone'],
+      gender: json['gender'],
+      dateOfBirth: json['dateOfBirth'] != null
+          ? DateTime.parse(json['dateOfBirth'])
+          : null,
+      wishlists: json['wishlists'],
+      carts: json['carts'],
       orders: json['orders'],
-      message: json['message'],// Cần map tương tự
+      message: json['message'],
     );
   }
 
-  // Phương thức để chuyển đối tượng thành JSON
+  // dart chuyen api
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'username': username,
       'email': email,
       'password': password,
-      'wishlists': wishlists, // Nếu cần map lại từng phần tử, thực hiện tương tự như `toJson`
+      'phone': phone,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth != null
+          ? DateFormat('yyyy-MM-dd').format(dateOfBirth!) // Format DateTime thành String
+          : null,
+      'wishlists': wishlists,
       'carts': carts,
       'orders': orders,
-      "message": message,
+      'message': message,
     };
   }
 }

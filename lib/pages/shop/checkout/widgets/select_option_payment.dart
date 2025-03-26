@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app_clothes/pages/models/PaymentMothod.dart';
-import 'package:shop_app_clothes/pages/service/PaymentMethodService%20.dart';
+
+
+import '../../../service/PaymentMethodService.dart';
 
 class SelectOptionPayment extends StatefulWidget {
   const SelectOptionPayment({super.key});
@@ -10,7 +12,7 @@ class SelectOptionPayment extends StatefulWidget {
 }
 
 class _SelectOptionPaymentState extends State<SelectOptionPayment> {
-  final PaymentMethodService _service = PaymentMethodService();
+  final PaymentMethodService_service = PaymentMethodService();
   List<PaymentMethod> _paymentMethods = [];
   int? _selectedPaymentMethodId;
 
@@ -22,7 +24,7 @@ class _SelectOptionPaymentState extends State<SelectOptionPayment> {
 
   Future<void> _fetchData() async {
     try {
-      final methods = await _service.fetchPaymentMethods();
+      final methods = await PaymentMethodService_service.fetchPaymentMethods();
       setState(() {
         _paymentMethods = methods;
         _selectedPaymentMethodId = methods.isNotEmpty ? methods[0].id : null;

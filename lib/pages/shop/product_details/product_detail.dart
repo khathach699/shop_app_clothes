@@ -23,7 +23,7 @@ class ProductDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
     return Scaffold(
-      bottomNavigationBar: TBottomAddToCartWidGet(
+      bottomNavigationBar: TBottomAddToCartWidget(
         productId: product.id,
         productImage: product.image,
         price: product.price,

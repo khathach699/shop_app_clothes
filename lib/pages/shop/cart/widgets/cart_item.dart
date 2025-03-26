@@ -34,50 +34,17 @@ class TCartItems extends StatelessWidget {
               colorName: cartItem.colorName,
               sizeName: cartItem.sizeName,
               productImage: cartItem.productName,
-              quantity: cartItem.quantity.toString(), // Pass quantity here
+              quantity: cartItem.quantity.toString(),
               price: cartItem.price,
               cartId:
                   cartItem
-                      .cartId, // Assuming you have cartId to remove the item
+                      .cartId,
               onRemove:
                   () =>
-                      onRemoveItem(cartItem.cartId), // Pass the remove callback
+                      onRemoveItem(cartItem.cartId),
             ),
 
-            //
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Row(
-            //       children: [
-            //         const SizedBox(width: 70),
-            //         TProductQuantityWithAddAndRemoveButton(
-            //           quantity: cartItem.quantity.toString(),
-            //         ),
-            //       ],
-            //     ),
-            //     TProductPriceText(price: cartItem.price.toString()),
-            //   ],
-            // ),
-            // Divider(),
 
-            // if (showAddRemoveButtons ) const SizedBox(height: TSize.spaceBtwItems),
-            // if (showAddRemoveButtons)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Row(
-            //         children: [
-            //           const SizedBox(width: 70),
-            //           TProductQuantityWithAddAndRemoveButton(
-            //             quantity: cartItem.quantity.toString(),
-            //           ),
-            //         ],
-            //       ),
-            //       TProductPriceText(price: cartItem.price.toString()),
-            //     ],
-            //   ),
-            // Divider(),
           ],
         );
       },

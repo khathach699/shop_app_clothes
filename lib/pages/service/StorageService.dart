@@ -19,4 +19,10 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token'); // Lấy token từ SharedPreferences
   }
+
+  static Future<void> clearUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId'); // Xóa userId khỏi SharedPreferences
+  }
+
 }

@@ -34,13 +34,15 @@ class OrderService {
   }
 
   Future<bool> createOrder(Map<String, dynamic> orderData) async {
-    try {
-      final response = await _authorizedRequest(
-        "POST",
-        "/add",
-        data: orderData,
-      );
-      return response.statusCode == 200 || response.statusCode == 201;
+    print("Creating order with data: $orderData");
+    try{
+      final response = await _authorizedRequest("POST", "/add", data: orderData);
+      print("Response data: ${response.data}");
+      if (response.data["code"] == 1000 || response.data["result"] != null) {
+        return true;
+      }else{
+        throw Exception("Failed to create order: Invalid response from server");
+      }
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
     }

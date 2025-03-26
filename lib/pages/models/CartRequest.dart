@@ -24,4 +24,8 @@ class CartRequest {
       'quantity': quantity,
     };
   }
+  @override
+  String toString() {
+    return toJson().toString(); // Trả về chuỗi JSON khi in ra
+  }
 }

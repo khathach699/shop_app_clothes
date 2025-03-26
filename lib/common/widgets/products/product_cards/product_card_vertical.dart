@@ -13,7 +13,6 @@ class TProductCardVertical extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print("Product Data: ${product.toString()}");
         Navigator.push(
           context,
           MaterialPageRoute(

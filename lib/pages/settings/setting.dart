@@ -11,11 +11,14 @@ import 'package:shop_app_clothes/pages/shop/order/order.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
+import '../controllers/UserController.dart';
+
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -62,25 +65,12 @@ class SettingScreen extends StatelessWidget {
                     subtitle: "Already have 12 orders",
                     onTap: () => Get.to(() => OrderScreen()),
                   ),
-                  // TSettingMenuTitle(
-                  //   icon: Iconsax.bank,
-                  //   title: "bank account",
-                  //   subtitle: "Paypal, Google Pay",
-                  //   onTap: () {},
-                  // ),
                   TSettingMenuTitle(
                     icon: Iconsax.notification,
                     title: "Notification",
                     subtitle: "All notification on",
                     onTap: () {},
                   ),
-                  // TSettingMenuTitle(
-                  //   icon: Iconsax.lock,
-                  //   title: "Privacy",
-                  //   subtitle: "System permission",
-                  //   onTap: () {},
-                  // ),
-
                   // add setting
                   SizedBox(height: TSize.spaceBtwSections),
                   TSectionHeading(
@@ -90,21 +80,18 @@ class SettingScreen extends StatelessWidget {
 
                   SizedBox(height: TSize.spaceBtwItems),
 
-                  // TSettingMenuTitle(
-                  //   icon: Iconsax.location,
-                  //   title: "Geolocation",
-                  //   subtitle: "Your custom location",
-                  //   trailing: Switch(value: true, onChanged: (value) {}),
-                  // ),
+
                   const SizedBox(height: TSize.spaceBtwItems),
-                  SizedBox(
+                  Obx(() => SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () {},
-                      child: Text("Log Out"),
+                      onPressed: () => userController.logout(),
+                      child: userController.isLoading.value ? CircularProgressIndicator() : Text("Log Out"),
                     ),
                   ),
+                  ),
                   const SizedBox(height: TSize.spaceBtwSections * 2.5),
+
                 ],
               ),
             ),

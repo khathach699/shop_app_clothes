@@ -36,15 +36,21 @@ class CartService {
   }
 
   Future<CartItem?> addToCart(CartRequest cartRequest) async {
+
+
     try {
       final response = await _authorizedRequest(
         "POST",
         "/add",
         data: cartRequest.toJson(),
       );
-      if (response.data is Map<String, dynamic>) {
-        return CartItem.fromJson(response.data);
+
+      if(response.data["code"] == 1000 || response.data["result"] != null){
+        if (response.data is Map<String, dynamic>) {
+          return CartItem.fromJson(response.data["result"]);
+        }
       }
+
       throw Exception('Unexpected response format for addToCart');
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));
@@ -61,13 +67,18 @@ class CartService {
   }
 
   Future<List<CartItem>?> getCart(int userId) async {
+    print("UserId: ${userId}");
     try {
       final response = await _authorizedRequest("GET", "/list/$userId");
-      if (response.data is List) {
+      print("Response data: ${response.data}");
+
+      if (response.data is Map<String, dynamic> &&
+          (response.data["code"] == 1000 || response.data["result"] != null)) {
         return List<CartItem>.from(
-          response.data.map((item) => CartItem.fromJson(item)),
+          response.data["result"].map((item) => CartItem.fromJson(item)),
         );
       }
+
       throw Exception('Unexpected response format for getCart');
     } on DioException catch (e) {
       throw Exception(_handleDioError(e));

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shop_app_clothes/app.dart';
+import 'package:shop_app_clothes/pages/controllers/CartController.dart';
+import 'package:shop_app_clothes/pages/controllers/ProductController.dart';
 
 void main() async {
-  await GetStorage.init();
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init(); Get.put(CartController()); // Đăng ký controller ngay lập tức
+  Get.put(ProductController()); // Đảm bảo cả ProductController cũng được đăng ký
   runApp(const App());
 }

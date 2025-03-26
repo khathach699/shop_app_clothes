@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_circular_Image.dart';
 import 'package:shop_app_clothes/common/widgets/texts/section_heading.dart';
 import 'package:shop_app_clothes/pages/address/profile/widgets/profile_menu.dart';
+import 'package:shop_app_clothes/pages/address/profile/update_profile.dart';
 import 'package:shop_app_clothes/utils/constants/image_strings.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
+
+import '../../controllers/UserController.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userController = Get.put(UserController());
     return Scaffold(
       appBar: TAppBar(showBackArrow: true, title: Text("Profile")),
       body: SingleChildScrollView(
@@ -41,17 +49,14 @@ class ProfileScreen extends StatelessWidget {
                 showActionButton: false,
               ),
               const SizedBox(height: TSize.spaceBtwItems),
-              TProfileMenu(
-                title: 'Name',
-                value: 'Stone king',
-                icon: Iconsax.arrow_right_34,
-                onTap: () {},
-              ),
-              TProfileMenu(
+              Obx(() => TProfileMenu(
                 title: 'Username',
-                value: 'Stone king',
+                value: userController.user.value?.username ?? "userName",
                 icon: Iconsax.arrow_right_34,
-                onTap: () {},
+                onTap: () {
+                  Get.to(() => UpdateProfileScreen());
+                },
+                ),
               ),
               const SizedBox(height: TSize.spaceBtwItems),
               const Divider(),
@@ -62,47 +67,51 @@ class ProfileScreen extends StatelessWidget {
                 showActionButton: false,
               ),
               const SizedBox(height: TSize.spaceBtwItems),
-              TProfileMenu(
-                title: 'UserID',
-                value: '4578',
-                icon: Iconsax.copy,
-                onTap: () {},
-              ),
-              TProfileMenu(
-                title: 'E-Mail',
-                value: 'Stoneking@gmail.com',
-                icon: Iconsax.arrow_right_34,
-                onTap: () {},
-              ),
-              TProfileMenu(
-                title: 'Phone Number',
-                value: '+1 987 654 3210',
-                icon: Iconsax.arrow_right_34,
-                onTap: () {},
-              ),
-              TProfileMenu(
-                title: 'Gender',
-                value: 'Male',
-                icon: Iconsax.arrow_right_34,
-                onTap: () {},
-              ),
-              TProfileMenu(
-                title: 'Date of Birth',
-                value: '12-12-2003',
-                icon: Iconsax.arrow_right_34,
-                onTap: () {},
-              ),
+              Obx(() => Column(
+                children: [
+                  TProfileMenu(
+                    title: 'UserID',
+                    value: userController.userId.value?.toString() ?? "userId",
+                    icon: Iconsax.copy,
+                    onTap: () {},
+                  ),
+                  TProfileMenu(
+                    title: 'E-Mail',
+                    value: userController.user.value?.email ?? "email",
+                    icon: Iconsax.arrow_right_34,
+                    onTap: () {},
+                  ),
+                  TProfileMenu(
+                    title: 'Phone Number',
+                    value: userController.user.value?.phone ?? "000",
+                    icon: Iconsax.arrow_right_34,
+                    onTap: () {},
+                  ),
+                  TProfileMenu(
+                    title: 'Gender',
+                    value: userController.user.value?.gender ?? "male",
+                    icon: Iconsax.arrow_right_34,
+                    onTap: () {},
+                  ),
+                  TProfileMenu(
+                    title: 'Date of Birth',
+                    value: userController.user.value?.dateOfBirth != null ? DateFormat("yyyy-MM-dd").format(userController.user.value!.dateOfBirth!) : "0",
+                    icon: Iconsax.arrow_right_34,
+                    onTap: () {},
+                  ),
+                ],
+              )),
               const Divider(),
               const SizedBox(height: TSize.spaceBtwItems),
 
               Center(
-                child: SizedBox(
+                child: Obx(() => SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text("Close Account"),
+                    onPressed: () => userController.logout(),
+                    child:userController.isLoading.value ? CircularProgressIndicator() :  Text("Close Account"),
                   ),
-                ),
+                ),),
               ),
             ],
           ),

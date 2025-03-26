@@ -17,7 +17,7 @@ class Order {
     required this.orderItems,
   });
 
-  // Chuyển đổi CartItem sang OrderItem
+
   static Order fromCartItems(
     int userId,
     int paymentMethodId,
