@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:shop_app_clothes/common/widgets/appbar/appbar.dart';
 import 'package:shop_app_clothes/common/widgets/custom_shapes/curved_edges/curved_edges_widget.dart';
@@ -8,55 +7,35 @@ import 'package:shop_app_clothes/common/widgets/icons/t_circular_icon.dart';
 import 'package:shop_app_clothes/common/widgets/images/t_roundted_image.dart';
 import 'package:shop_app_clothes/utils/constants/colors.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
-
 import '../../../controllers/WishlistController.dart';
 import '../../../models/Product.dart';
 
-class TProductImageSlider extends StatefulWidget {
+class TProductImageSlider extends StatelessWidget {
   final Product product;
+  final bool dark;
+
   const TProductImageSlider({
     super.key,
     required this.dark,
     required this.product,
   });
 
-  final bool dark;
-
   @override
-  State<TProductImageSlider> createState() => _TProductImageSliderState();
-}
+  Widget build(BuildContextContext) {
+    final WishlistController wishlistController = Get.put(WishlistController());
+    // Kiểm tra wishlist khi widget được xây dựng
+    wishlistController.checkIfInWishlist(product.id);
 
-class _TProductImageSliderState extends State<TProductImageSlider> {
-  late WishlistController _wishlistController;
-
-  @override
-  void initState() {
-    super.initState();
-    _wishlistController = Get.put(WishlistController());
-    _checkIfInWishlist();
-  }
-
-  _checkIfInWishlist() async {
-    final box = GetStorage();
-    int? userId = box.read('userId');
-    if (userId != null) {
-      // Kiểm tra trạng thái wishlist ban đầu mà không thay đổi gì
-      await _wishlistController.checkIfInWishlist( widget.product.id);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return TCurveEdgeWidget(
       child: Container(
-        color: widget.dark ? TColors.darkGrey : TColors.light,
+        color: dark ? TColors.darkGrey : TColors.light,
         child: Stack(
           children: [
             SizedBox(
               height: 400,
               child: Padding(
                 padding: const EdgeInsets.all(TSize.productImageRadius * 2),
-                child: Image(image: NetworkImage(widget.product.image)),
+                child: Image(image: NetworkImage(product.image)),
               ),
             ),
             Positioned(
@@ -69,44 +48,30 @@ class _TProductImageSliderState extends State<TProductImageSlider> {
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemBuilder:
-                      (_, index) => TRoundedImage(
-                        imageUrl: widget.product.image,
-                        width: 80,
-                        backgroundColor:
-                            widget.dark
-                                ? TColors.dart
-                                : TColors
-                                    .light, // Keep it as is, no change in background
-                        border: Border.all(color: TColors.primaryColor),
-                        padding: const EdgeInsets.all(TSize.sm),
-                      ),
-                  separatorBuilder:
-                      (_, __) => const SizedBox(width: TSize.spaceBtwItems),
-                  itemCount: 6,
+                  itemBuilder: (_, index) => TRoundedImage(
+                    imageUrl: product.image,
+                    width: 80,
+                    backgroundColor: dark ? TColors.dart : TColors.light,
+                    border: Border.all(color: TColors.primaryColor),
+                    padding: const EdgeInsets.all(TSize.sm),
+                  ),
+                  separatorBuilder: (_, __) => const SizedBox(width: TSize.spaceBtwItems),
+                  itemCount: 1, // Chỉ hiển thị 1 ảnh nếu không có danh sách ảnh phụ
                 ),
               ),
             ),
             TAppBar(
               showBackArrow: true,
               actions: [
-                Obx(() {
-                  return TCircularIcon(
-                    icon:
-                        _wishlistController.isInWishlist.value
-                            ? Iconsax.heart5
-                            : Iconsax.heart,
-                    color:
-                        _wishlistController.isInWishlist.value
-                            ? Colors.red
-                            : Colors.grey,
-                    onPressed: () async {
-                      await _wishlistController.toggleWishlist(
-                        widget.product.id,
-                      );
-                    },
-                  );
-                }),
+                Obx(() => TCircularIcon(
+                  icon: wishlistController.isInWishlist.value
+                      ? Iconsax.heart // Trái tim đầy khi trong wishlist
+                      : Iconsax.heart, // Trái tim rỗng khi không trong wishlist
+                  backgroundColor: wishlistController.isInWishlist.value
+                      ? Colors.red // Màu đỏ khi trong wishlist
+                      : Colors.white, // Màu xám khi không trong wishlist
+                  onPressed: () => wishlistController.toggleWishlist(product.id),
+                )),
               ],
             ),
           ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shop_app_clothes/pages/models/Product.dart';
-import 'package:shop_app_clothes/pages/service/WishlistService.dart';
 
+
+import '../models/Product.dart';
 import '../service/StorageService.dart';
+import '../service/WishlistService.dart';
+
 
 class WishlistController extends GetxController {
   final WishListService _wishlistService = WishListService();
@@ -16,15 +18,16 @@ class WishlistController extends GetxController {
   int? userId;
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    await _loadUserId();
-    await fetchWishlist();
-
+    _initialize(); // Gọi hàm khởi tạo không async
   }
 
-  Future<void> _loadUserId() async {
+  Future<void> _initialize() async {
     userId = await StorageService.getUserId();
+    if (userId != null) {
+      await fetchWishlist();
+    }
   }
 
   Future<void> fetchWishlist() async {
@@ -36,7 +39,6 @@ class WishlistController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
       final fetchedWishlist = await _wishlistService.getWishlist(userId!);
-      print(fetchedWishlist);
       wishlist.assignAll(fetchedWishlist);
     } catch (e) {
       errorMessage.value = 'Failed to fetch wishlist: $e';
@@ -47,15 +49,16 @@ class WishlistController extends GetxController {
   }
 
   Future<void> checkIfInWishlist(int productId) async {
-    if (userId == null) return;
+    if (userId == null) {
+      isInWishlist.value = false; // Mặc định là false nếu chưa đăng nhập
+      return;
+    }
     try {
-      final exists = await _wishlistService.isProductInWishlist(
-        userId!,
-        productId,
-      );
-      isInWishlist.value = exists;
+      final exists = await _wishlistService.isProductInWishlist(userId!, productId);
+      isInWishlist.value = exists; // Cập nhật trạng thái dựa trên kết quả API
     } catch (e) {
       errorMessage.value = 'Error checking wishlist: $e';
+      isInWishlist.value = false; // Đặt về false nếu có lỗi
     }
   }
 
@@ -66,6 +69,7 @@ class WishlistController extends GetxController {
     }
 
     try {
+      isLoading.value = true;
       if (isInWishlist.value) {
         await _wishlistService.removeProductFromWishlist(userId!, productId);
         wishlist.removeWhere((p) => p.id == productId);
@@ -94,12 +98,14 @@ class WishlistController extends GetxController {
       errorMessage.value = 'Error toggling wishlist: $e';
       Get.snackbar(
         'Error toggling wishlist',
-        '$e.',
+        '$e',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.black87,
         colorText: Colors.white,
         duration: const Duration(seconds: 2),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 }

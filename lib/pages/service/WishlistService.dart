@@ -56,13 +56,18 @@ class WishListService {
     throw Exception('Dữ liệu trả về không đúng định dạng.');
   }
 
-  Future<WishlistItem> addProductToWishlist(int userId, int productId) async {
+  Future<Product> addProductToWishlist(int userId, int productId) async {
     final response = await _authorizedRequest(
-      '/$userId/add/$productId',
+      '/add',
       method: 'POST',
+      data: {
+        "userId": "$userId",
+        "productId": "$productId"
+      },
     );
+    print(response.data);
     if (response.data["code"] == 1000 && response.data["result"] != null) {
-      return WishlistItem.fromJson(response.data["result"]);
+      return Product.fromJson(response.data["result"]);
     } else {
       throw Exception(
         'Failed to add product to wishlist: ${response.data["message"] ?? "Unknown error"}',
@@ -71,13 +76,28 @@ class WishListService {
   }
 
   Future<void> removeProductFromWishlist(int userId, int productId) async {
-    await _authorizedRequest('/$userId/remove/$productId', method: 'DELETE');
+    await _authorizedRequest('', method: 'DELETE',
+    data: {
+      "userId": "$userId",
+      "productId": "$productId"
+    }
+    );
   }
 
   Future<bool> isProductInWishlist(int userId, int productId) async {
-    final response = await _authorizedRequest('/$userId/exists/$productId');
-    if (response.data is bool) return response.data as bool;
-    throw Exception('Dữ liệu trả về không đúng định dạng.');
+    try {
+      final response = await _authorizedRequest('/exists', data: {
+        "userId": "$userId",
+        "productId": "$productId"
+      });
+      if (response.data["code"] == 1000 && response.data["result"] is bool) {
+        return response.data["result"] as bool;
+      } else {
+        throw Exception('Invalid response format or code.');
+      }
+    } catch (e) {
+      throw Exception('Failed to check wishlist: $e');
+    }
   }
 
   String _handleDioError(DioException error) {
