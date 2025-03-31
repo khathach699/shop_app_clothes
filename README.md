@@ -56,4 +56,4 @@
 ## 💡 Góp ý & Liên hệ
 
 - 📧 Liên hệ:Tôi luôn hoan nghênh mọi đóng góp để cải thiện dự án! 
-- 📱 Liên hệ:Nếu bạn có bất kỳ góp ý vui lòng liện hê qua email: khathach699@mail.com
+- 📱 Liên hệ:Nếu bạn có bất kỳ góp ý vui lòng liện hê qua email: khathach699@gmail.com
