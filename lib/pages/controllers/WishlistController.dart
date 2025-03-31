@@ -18,13 +18,13 @@ class WishlistController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    fetchWishlist();
     await _loadUserId();
+    await fetchWishlist();
+
   }
 
   Future<void> _loadUserId() async {
     userId = await StorageService.getUserId();
-    update();
   }
 
   Future<void> fetchWishlist() async {
@@ -36,6 +36,7 @@ class WishlistController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
       final fetchedWishlist = await _wishlistService.getWishlist(userId!);
+      print(fetchedWishlist);
       wishlist.assignAll(fetchedWishlist);
     } catch (e) {
       errorMessage.value = 'Failed to fetch wishlist: $e';

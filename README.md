@@ -50,7 +50,7 @@
 | ![Order History](assets/images/OrderHistoryPage.png) | ![Payment Success](assets/images/SuccessPaymentPage.png) | ![Address](assets/images/AddressPage.png) |
 
 | Đánh giá sản phẩm | Hồ sơ cá nhân |
-|---|---|
+|---|---|![img_1.png](img_1.png)
 | ![Rating](assets/images/CommemtAndRatingPage.png) | ![Profile](assets/images/ProfilPage.png) |
 
 ## 💡 Góp ý & Liên hệ

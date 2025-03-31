@@ -25,13 +25,11 @@ class UserAddressScreen extends StatelessWidget {
         return "Quyền truy cập vị trí bị từ chối.";
       }
     }
-
     // Lấy vị trí hiện tại
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    // Trả về tọa độ (Có thể thay thế bằng một dịch vụ geocoding để lấy địa chỉ hoàn chỉnh)
     return "Lat: ${position.latitude}, Long: ${position.longitude}"; // Bạn có thể thay thế phần này bằng geocoding để lấy địa chỉ đầy đủ
   }
 
@@ -82,23 +80,6 @@ class UserAddressScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: TSize.spaceBtwInputField),
-
-                //  Obx(
-                //   () => TextFormField(
-                //     controller: TextEditingController(
-                //       text: addressController.address.value,
-                //     ),
-                //     decoration: const InputDecoration(
-                //       prefixIcon: Icon(Iconsax.building_31),
-                //       labelText: "Địa Chỉ",
-                //     ),
-                //     onChanged: (value) {
-                //       addressController.address.value = value;
-                //     },
-                //   ),
-                // ),
-                // const SizedBox(height: TSize.spaceBtwInputField),
-
                 // Nút lấy địa chỉ hiện tại
                 ElevatedButton(
                   onPressed: () async {

@@ -19,7 +19,6 @@ class WishListService {
           receiveTimeout: Duration(milliseconds: _receiveTimeout),
         ),
       );
-
   Future<String?> _getToken() async => await StorageService.getToken();
 
   Future<Response> _authorizedRequest(
@@ -43,11 +42,16 @@ class WishListService {
   }
 
   Future<List<Product>> getWishlist(int userId) async {
-    final response = await _authorizedRequest('/$userId');
-    if (response.data is List) {
-      return (response.data as List)
-          .map((item) => Product.fromJson(item))
-          .toList();
+    final response = await _authorizedRequest('/listWishlist', data: {
+      "userId": "$userId"
+    });
+    print(response.data);
+    if(response.data["code"] == 1000 && response.data["result"] != null){
+      if (response.data["result"] is List) {
+        return List<Product>.from(
+          response.data["result"].map((item) => Product.fromJson(item)),
+        ) ;
+      }
     }
     throw Exception('Dữ liệu trả về không đúng định dạng.');
   }
