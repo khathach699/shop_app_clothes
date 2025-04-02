@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class ProductController extends GetxController {
   var selectedSize = ''.obs;
@@ -22,6 +23,7 @@ class ProductController extends GetxController {
     'XXL': 5,
   };
 
+
   void setSelectedSize(String size) => selectedSize.value = size;
   void setSelectedColor(String color) => selectedColor.value = color;
   void incrementQuantity() => quantity.value++;
@@ -31,10 +33,21 @@ class ProductController extends GetxController {
   int getSelectedSizeId() => sizeMapping[selectedSize.value] ?? 0;
   double get totalPrice => productPrice.value * quantity.value;
 
-  // Hàm giả lập tải giá sản phẩm từ API
   void fetchProductPrice(int productId) async {
-    // Giả lập API call
     await Future.delayed(const Duration(seconds: 1));
     productPrice.value = 75.0; // Giá mới từ API
+  }
+
+  void checkout(int productId) {
+    Get.toNamed(
+      '/checkout',
+      arguments: {
+        'productId': productId,
+        'quantity': quantity.value,
+        'selectedColorId': getSelectedColorId(),
+        'selectedSizeId': getSelectedSizeId(),
+        'price': productPrice.value,
+      },
+    );
   }
 }

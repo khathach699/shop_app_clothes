@@ -28,7 +28,8 @@ class OrderService {
       data: data,
       options: Options(
         method: method,
-        headers: {"Authorization": "Bearer $token"},
+        headers: {"Authorization": "Bearer $token",
+          "Content-Type": "application/json",},
       ),
     );
   }

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:shop_app_clothes/common/widgets/image_text_widgets/vertical_image_text.dart';
 import 'package:shop_app_clothes/pages/models/Category.dart';
 import 'package:shop_app_clothes/pages/shop/category/categories.dart';
 import 'package:shop_app_clothes/pages/service/CategoryService.dart';
 import 'package:shop_app_clothes/utils/constants/size.dart';
 
-// Import model CategoryResponse
 class THomeCategories extends StatelessWidget {
   final CategoryService _categoryService = CategoryService();
+
   THomeCategories({super.key});
 
   @override
@@ -20,63 +19,22 @@ class THomeCategories extends StatelessWidget {
         future: _categoryService.getAllCategories(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Column(
-              children: [
-                // Shimmer for banner
-                Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    height: 150,
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(
-                      bottom: TSize.spaceBtwSections,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: TSize.spaceBtwSections),
-
-                // Shimmer grid for products
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.7,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: 6, // Number of placeholders
-                  itemBuilder: (context, index) {
-                    return Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
 
+          // Khi có lỗi
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
 
+          // Khi không có dữ liệu
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No categories available'));
+            return const Center(child: Text('No categories available'));
           }
 
+          // Khi có dữ liệu
           List<CategoryResponse> categories = snapshot.data!;
 
           return ListView.builder(
@@ -90,13 +48,12 @@ class THomeCategories extends StatelessWidget {
                   // Ensure categoryId is valid
                   if (category.id != null) {
                     Get.to(
-                      () => CategoriesScreen(
+                          () => CategoriesScreen(
                         categoryId: category.id,
                       ), // category.id should be valid here
                     );
-                  } else {}
+                  }
                 },
-
                 child: TVerticalImageText(
                   image: category.image,
                   title: category.name,

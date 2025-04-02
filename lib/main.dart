@@ -8,7 +8,8 @@ import 'package:shop_app_clothes/pages/controllers/ProductController.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init(); Get.put(CartController()); // Đăng ký controller ngay lập tức
-  Get.put(ProductController()); // Đảm bảo cả ProductController cũng được đăng ký
+  await GetStorage.init();
+  Get.put(CartController());
+  Get.put(ProductController());
   runApp(const App());
 }

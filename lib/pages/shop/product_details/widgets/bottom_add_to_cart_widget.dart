@@ -60,10 +60,12 @@ class TBottomAddToCartWidget extends StatelessWidget {
           onPressed: controller.decrementQuantity,
         ),
         const SizedBox(width: TSize.spaceBtwItems),
-        Obx(() => Text(
-          "${controller.quantity.value}",
-          style: Get.textTheme.titleSmall,
-        )),
+        Obx(
+          () => Text(
+            "${controller.quantity.value}",
+            style: Get.textTheme.titleSmall,
+          ),
+        ),
         const SizedBox(width: TSize.spaceBtwItems),
         TCircularIcon(
           icon: Iconsax.add,
@@ -78,7 +80,9 @@ class TBottomAddToCartWidget extends StatelessWidget {
   }
 
   Widget _buildAddToCartButton(
-      ProductController productController, CartController cartController) {
+    ProductController productController,
+    CartController cartController,
+  ) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.all(TSize.md),
@@ -101,7 +105,7 @@ class TBottomAddToCartWidget extends StatelessWidget {
       ),
       child: const Text("Thanh toán"),
       onPressed: () {
-        // controller.checkout(productId);
+        controller.checkout(productId);
       },
     );
   }

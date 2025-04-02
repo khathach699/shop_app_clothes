@@ -21,11 +21,9 @@ class TProductImageSlider extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContextContext) {
+  Widget build(BuildContext Context) {
     final WishlistController wishlistController = Get.put(WishlistController());
-    // Kiểm tra wishlist khi widget được xây dựng
     wishlistController.checkIfInWishlist(product.id);
-
     return TCurveEdgeWidget(
       child: Container(
         color: dark ? TColors.darkGrey : TColors.light,
